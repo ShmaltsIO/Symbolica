@@ -22,7 +22,8 @@ if(WIN32)
     set(BLT_LIB_EXT ".lib")
     set(BLT_DLL_EXT ".dll")
     set(BLT_COPY_COMMAND copy_if_different)
-elseif(UNIX AND NOT APPLE)
+elseif(UNIX)
+    message("")
     set(BLT_PLATFORM_DIR "Linux64")
     set(BLT_LIB_EXT ".so")           # обычно .so для динамической библиотеки, если статическая - .a
     set(BLT_DLL_EXT ".so")           # или .so.x.x
@@ -51,6 +52,11 @@ set(BearLibTerminal_ROOT "${PROJECT_SOURCE_DIR}/lib/BearLibTerminal/${BLT_PLATFO
 find_package(BearLibTerminal REQUIRED)
 message(STATUS "BLT_LIBRARY (variable) = ${BLT_LIBRARY}")
 
+# inih library
+set(INIH_ROOT "${PROJECT_SOURCE_DIR}/lib/inih")
+add_library(inih STATIC "${INIH_ROOT}/ini.c")
+target_include_directories(inih PRIVATE "${INIH_ROOT}")
+
 # Проверяем, что переменные определены
 if(NOT BLT_INCLUDE_DIRS)
     message(FATAL_ERROR "BLT_INCLUDE_DIRS not set by FindBearLibTerminal.cmake")
@@ -78,7 +84,10 @@ add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 # 5. Пути к заголовкам
 # -----------------------------------------------------------------------------
 # Заголовки BearLibTerminal (обычно системные, подавляем предупреждения)
-target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE ${BLT_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} 
+SYSTEM PRIVATE ${BLT_INCLUDE_DIRS} 
+PRIVATE "${INIH_ROOT}" 
+SYSTEM PRIVATE "${PROJECT_SOURCE_DIR}/lib/nlohmann")
 
 # Собственные заголовки проекта
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -93,16 +102,17 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     "${PROJECT_SOURCE_DIR}/include/utils/game"
     "${PROJECT_SOURCE_DIR}/include/utils/math"
     "${PROJECT_SOURCE_DIR}/include/utils/service"
-    "${PROJECT_SOURCE_DIR}/include/classes"
+    "${PROJECT_SOURCE_DIR}/include/utils/ecs"
+    "${PROJECT_SOURCE_DIR}/include/config"
+    "${PROJECT_SOURCE_DIR}/include/input"
+    "${PROJECT_SOURCE_DIR}/include/io"
     "${PROJECT_SOURCE_DIR}/src"
-    "${PROJECT_SOURCE_DIR}/config"
-    "${PROJECT_SOURCE_DIR}/src/symbolica/levels"
 )
 
 # -----------------------------------------------------------------------------
 # 6. Линковка с библиотекой
 # -----------------------------------------------------------------------------
-target_link_libraries(${PROJECT_NAME} ${BLT_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${BLT_LIBRARIES} inih)
 
 # -----------------------------------------------------------------------------
 # 7. Копирование .dll в папку сборки
@@ -119,7 +129,7 @@ if(WIN32)
         COMMENT "Copying BearLibTerminal.dll to output directory"
     )
 elseif(UNIX)
-    set(BLT_LIBRARY_SO "${BearLibTerminal_ROOT}/BearLibTerminal.so")
+    set(BLT_LIBRARY_SO "${BearLibTerminal_ROOT}/libBearLibTerminal.so")
 
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -134,15 +144,47 @@ elseif(UNIX)
 endif()
 
 # -----------------------------------------------------------------------------
-# 8. Линтинг (опционально)
+# 8. Копирование папок с ресурсами
 # -----------------------------------------------------------------------------
-if(EXISTS "${PROJECT_SOURCE_DIR}/CMake/CppLint.cmake")
-    include(CppLint)
-    ADD_STYLE_CHECK_TARGET(lint ${PROJECT_NAME} ${PROJECT_HEADERS_DIR} ${PROJECT_SOURCES_DIR})
-    # add_dependencies(${PROJECT_NAME} lint)
-else()
-    message(STATUS "CppLint module not found, lint target disabled")
+# Копируем папку config (если есть)
+if(EXISTS "${PROJECT_SOURCE_DIR}/config")
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${PROJECT_SOURCE_DIR}/config"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/config"
+        COMMENT "Copying config files to output directory"
+    )
 endif()
+
+# Копируем папку assets (если есть)
+if(EXISTS "${PROJECT_SOURCE_DIR}/assets")
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${PROJECT_SOURCE_DIR}/assets"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
+        COMMENT "Copying assets to output directory"
+    )
+endif()
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/levels")
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${PROJECT_SOURCE_DIR}/levels"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/levels"
+        COMMENT "Copying levels to output directory"
+    )
+endif()
+
+# -----------------------------------------------------------------------------
+# 9. Линтинг (опционально)
+# -----------------------------------------------------------------------------
+# if(EXISTS "${PROJECT_SOURCE_DIR}/CMake/CppLint.cmake")
+#     include(CppLint)
+#     ADD_STYLE_CHECK_TARGET(lint ${PROJECT_NAME} ${PROJECT_HEADERS_DIR} ${PROJECT_SOURCES_DIR})
+#     # add_dependencies(${PROJECT_NAME} lint)
+# else()
+#     message(STATUS "CppLint module not found, lint target disabled")
+# endif()
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Symbolica PROPERTY CXX_STANDARD 20)

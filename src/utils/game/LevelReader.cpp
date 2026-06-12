@@ -23,7 +23,7 @@ Grid LevelReader::read() {
     int y = 1;
     // TODO-SOLVE: That's can be incorrectrly, because we can handle only digits 0-9, and NOT numbers 10-...
     std::string extend_of_file = ".txt";
-    std::string filename = "room";
+    std::string filename = "level";
 
     int size_of_extend_of_file = extend_of_file.length();
     int size_of_filename = filename.length();

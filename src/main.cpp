@@ -1,5 +1,4 @@
 #include <iostream>
-// #include </home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/lib/BearLibTerminal/include/BearLibTerminal.h>
 #include "BearLibTerminal.h"
 #include "Controls.h"
 #include "Context.h"
@@ -15,57 +14,67 @@
 #include "LoadingScene.h"
 #include "SettingsScene.h"
 #include <fstream>
+#include <filesystem>
+#include "IniParser.h"
+
+namespace fs = std::filesystem;
 
 #include "RoomGenerator.h"
+#include <TilemapConfig.h>
 using namespace std;
 
 int main() {
+  // --- НАСТРОЙКА ТЕРМИНАЛА ---
+  // std::cout << "Current working dir: " << fs::current_path() << std::endl;
+  IniParser parser;
+  std::string configStr;
+    
+  if (parser.load("config/terminal.ini")) {
+    // Читаем секцию [window]
+    std::string title = parser.getString("window", "title", "Symbolica");
+    bool resizeable = parser.getBool("window", "resizeable", true);
+    std::string size = parser.getString("window", "size", "150x50");
+        
+    configStr = "window.title='" + title + "'; window.resizeable=" + (resizeable ? "true" : "false") + "; window.size=" + size;
+      
+    // Можно добавить и другие секции, например, [font], но для BearLibTerminal все параметры плоские.
+    std::cout << "Terminal config: " << configStr << std::endl;
+  } else {
+    // fallback
+    configStr = "window.title='Symbolica'; window.resizeable=true; window.size=150x50";
+  }
   
-  // Grid gridden(getRandomNumber(10, 80, 10), getRandomNumber(10, 80, 10));
-  // Vector2D vecA(0,1);
-  // Vector2D vecD(7,8);
-  // Node node1(vecA);
-  // Node node2(vecD);
+  terminal_open();
+  terminal_set(configStr.c_str());
+  
 
-  // for (auto& pair : gridden.map_) {
-  //   cout << "GRIDDEN:" << pair.first << " : " << pair.second << endl;
+
+  // const char* version = terminal_get("version");
+  // std::cout << "BearLibTerminal version: " << version << std::endl;      
+  // int width = terminal_state(TK_WIDTH);   // ширина в ячейках
+  // int height = terminal_state(TK_HEIGHT); // высота в ячейках
+  // std::cout << "Actual terminal size: " << width << "x" << height << std::endl;
+
+  TilemapConfig tilemap;
+  // if (!tilemap.load("config/tilemap.ini")) {
+  //     // Обработка ошибки, возможно, используются встроенные значения по умолчанию
+  //     terminal_print(1, 1, "ERROR: cannot load tilemap.ini");
   // }
 
-  // generateLevel(node1, node2, gridden);
+  // При старте применяешь настройки графики (например, высокое качество)
+  // tilemap.applyToTerminal("graphics_high");
+  // tilemap.applyToTerminal("gui"); // если нужно для интерфейса
   
-
-  char w = ' ';
-  ofstream out;
-  out.open("ghost/day.txt");
-  out << "W" << endl;
-  out.close();
-  ifstream in;
-  in.open("ghost/day.txt");
-  in >> w;
-  in.close();
-  cout << w << endl;
   LevelReader lr;
-  std::string path_to_file_ = ("/home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/levels/room18.txt");
+  std::string path_to_file_ = ("levels/level1.txt");
   int left_bound = path_to_file_.find("room");
   int right_bound = path_to_file_.find(".txt");
   std::string level = path_to_file_.substr(left_bound+4, right_bound-left_bound-4);
   
   std::cout << "LEVEL READER:" << level << std::endl;
-  // See your notes about this
-
-  //generateLevelMOD(10, 10, 1);
-
 
   cout << "START MAIN" << endl;
-  // TODO: maybe make not string? array[][]
-  // Make inventory to player
-  // Add level generator, see your notes
-  terminal_open();
-  // terminal_set("Symbolica.ini");
-  // terminal_set("Symbolica.BearLibTerminal.window.title='Wowing'"); Not working
-
-  //terminal_set("window.title='wow'; window.size=40x40;");
-  terminal_set("window.resizeable=true; window.size=100x100");
+  
   terminal_refresh();
 
   Controls controls;
@@ -82,6 +91,7 @@ int main() {
 
   // Start scene
   ctx.scene_ = "title";
+  ctx.tilemapConfig = &tilemap;
 
   // Simple game loop
   while (true) {

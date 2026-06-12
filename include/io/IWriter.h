@@ -9,7 +9,6 @@ class IWriter {
 protected:
     virtual ~IWriter() = default;
 public:
-    //virtual void write() = 0;
     virtual void write(T) = 0;
 
     IWriter& operator=(const IWriter&) = delete;

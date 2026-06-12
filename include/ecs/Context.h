@@ -2,6 +2,7 @@
 #define CONTEXT_H
 
 #include <string>
+#include <TilemapConfig.h>
 
 /**
  * @brief Context have information about actual scene, which should be displayed now.
@@ -26,6 +27,7 @@ class Context {
   bool is_load = false;
   bool is_game_over = false;
   bool is_start = false;
+  TilemapConfig* tilemapConfig = nullptr; // или unique_ptr, но проще сырой указатель
   // map for statistics
 };
 

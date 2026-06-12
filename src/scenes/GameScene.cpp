@@ -132,20 +132,21 @@ void GameScene::OnCreate() {
   }  
 
   // Load first level if new game, else continue (also includes switches between rooms)
+  std::cout << "Rabota 67" << std::endl;
   if (context_->is_start) {
     context_->is_start = false;
     level_map.level_number_ = 1;
-    level_path = "/home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/levels/room1.txt";
+    level_path = "levels/level1.txt";
     std::vector<Vector2D> path;
-    while (path.empty()) {
-      std::cout << "ITERATION" << std::endl;
-      path = generateLevel(one, two, level_map);
-    }
-    //level_map = generateLevelMOD(20, 20, level_map.level_number_);
+    // while (path.empty()) {
+    //   std::cout << "ITERATION" << std::endl;
+    //   path = generateLevel(one, two, level_map);
+    // }
+    // level_map = generateLevelMOD(20, 20, level_map.level_number_);
     lr_e->setPathToFile(level_path);
     level_map = lr_e->read();
   } else {
-    level_path = "/home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/levels/room" + std::to_string(level_map.level_number_) + ".txt";
+    level_path = "levels/room" + std::to_string(level_map.level_number_) + ".txt";
     lr_e->setPathToFile(level_path);
     if (context_->is_load && lr_e->checkFileExist()) {
       level_map = lr_e->read();
