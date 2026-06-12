@@ -155,7 +155,7 @@ static std::vector<Vector2D> generateLevel(Node start, Node end, const Grid& gri
     out.close();
     LevelWriter lw;
     //std::cout << "LEVEL NUMBER: " << grid_.level_number_ << std::endl;
-    lw.write(grid_);
+    // lw.write(grid_);
     return path;
 }
 

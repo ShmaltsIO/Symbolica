@@ -132,7 +132,7 @@ static Grid generateLevelMOD(int width, int height, int level_number) {
     
     // Save level in file
     LevelWriter lw;
-    lw.write(level_map);
+    // lw.write(level_map);
 
     return level_map;
 }

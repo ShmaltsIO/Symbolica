@@ -1,21 +1,21 @@
-#include "LevelWriter.h"
+#include "LevelWriterTxt.h"
 #include <fstream>
 #include <iostream>
-LevelWriter::LevelWriter(): path_to_file_("") {}
+LevelWriterTxt::LevelWriterTxt(): path_to_file_("") {}
 
-void LevelWriter::setPathToFile(std::string path) {
+void LevelWriterTxt::setPathToFile(std::string path) {
     path_to_file_ = path;
 }
 
-std::string LevelWriter::getPathToFile() {
+std::string LevelWriterTxt::getPathToFile() {
     return path_to_file_;
 }
 
-std::string LevelWriter::getPathToFile() const {
+std::string LevelWriterTxt::getPathToFile() const {
     return path_to_file_;
 }
 
-void LevelWriter::write(Grid& level_map) {
+void LevelWriterTxt::write(Grid& level_map) {
     int x = 1;
     int y = 1;
     char symbol = ' ';

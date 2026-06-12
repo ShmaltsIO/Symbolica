@@ -1,5 +1,5 @@
-#ifndef LEVEL_READER_H
-#define LEVEL_READER_H
+#ifndef LEVEL_READER_TXT_H
+#define LEVEL_READER_TXT_H
 
 #include "IReader.h"
 #include "Grid.h"
@@ -8,11 +8,11 @@
 /**
  * @brief Class for reading game levels from special files.
  */
-class LevelReader: public IReader<Grid> {
+class LevelReaderTxt: public IReader<Grid> {
 private:
     std::string path_to_file_;
 public:
-    LevelReader();
+    LevelReaderTxt();
 
     void setPathToFile(std::string);
     std::string getPathToFile();
@@ -22,4 +22,4 @@ public:
     Grid read() override;
 };
 
-#endif // LEVEL_READER_H
+#endif // LEVEL_READER_TXT_H

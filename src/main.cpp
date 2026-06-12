@@ -16,7 +16,8 @@
 #include <fstream>
 #include <filesystem>
 #include "IniParser.h"
-
+#include "DungeonGenerator.h"
+#include "Map.h"
 namespace fs = std::filesystem;
 
 #include "RoomGenerator.h"
@@ -25,7 +26,7 @@ using namespace std;
 
 int main() {
   // --- НАСТРОЙКА ТЕРМИНАЛА ---
-  // std::cout << "Current working dir: " << fs::current_path() << std::endl;
+  std::cout << "Current working dir: " << fs::current_path() << std::endl;
   IniParser parser;
   std::string configStr;
     
@@ -64,6 +65,21 @@ int main() {
   // При старте применяешь настройки графики (например, высокое качество)
   // tilemap.applyToTerminal("graphics_high");
   // tilemap.applyToTerminal("gui"); // если нужно для интерфейса
+
+  std::cout << "Dungeon Generation..." << std::endl;
+  DungeonGenerator dg = DungeonGenerator();
+  Map mmm = dg.generate(20, 20);
+  LevelWriter lw = LevelWriter();
+  lw.setPathToFile("TestDungeon.json");
+  lw.write(mmm);
+  std::cout << "End of test generation!"<< std::endl;
+  for (size_t y = 0; y < mmm.getHeight(); ++y) {
+    for (size_t x = 0; x < mmm.getWidth(); ++x) {
+        char ch = static_cast<char>(mmm.getTile(x, y));
+        std::cout << ch;
+    }
+    std::cout << '\n';
+}
   
   LevelReader lr;
   std::string path_to_file_ = ("levels/level1.txt");

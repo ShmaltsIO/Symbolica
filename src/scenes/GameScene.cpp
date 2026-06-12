@@ -144,24 +144,24 @@ void GameScene::OnCreate() {
     // }
     // level_map = generateLevelMOD(20, 20, level_map.level_number_);
     lr_e->setPathToFile(level_path);
-    level_map = lr_e->read();
+    // level_map = lr_e->read();
   } else {
     level_path = "levels/room" + std::to_string(level_map.level_number_) + ".txt";
     lr_e->setPathToFile(level_path);
-    if (context_->is_load && lr_e->checkFileExist()) {
-      level_map = lr_e->read();
-      context_->is_load = false;
-    } else {
-      std::cout << "ELSE" << std::endl;
-      std::vector<Vector2D> path;
-      while (path.empty()) {
-        std::cout << "ITERATION" << std::endl;
-        path = generateLevel(one, two, level_map);
-      }
-      //level_map = generateLevelMOD(20, 20, level_map.level_number_);
-      level_map = lr_e->read();
-      context_->is_load = false;
-    }
+    // if (context_->is_load && lr_e->checkFileExist()) {
+    //   level_map = lr_e->read();
+    //   context_->is_load = false;
+    // } else {
+    //   std::cout << "ELSE" << std::endl;
+    //   std::vector<Vector2D> path;
+    //   while (path.empty()) {
+    //     std::cout << "ITERATION" << std::endl;
+    //     path = generateLevel(one, two, level_map);
+    //   }
+    //   //level_map = generateLevelMOD(20, 20, level_map.level_number_);
+    //   level_map = lr_e->read();
+    //   context_->is_load = false;
+    // }
   }
 
   // FOR TESTS 0 level

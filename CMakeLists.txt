@@ -104,6 +104,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     "${PROJECT_SOURCE_DIR}/include/utils/service"
     "${PROJECT_SOURCE_DIR}/include/utils/ecs"
     "${PROJECT_SOURCE_DIR}/include/config"
+    "${PROJECT_SOURCE_DIR}/include/core"
     "${PROJECT_SOURCE_DIR}/include/input"
     "${PROJECT_SOURCE_DIR}/include/io"
     "${PROJECT_SOURCE_DIR}/src"

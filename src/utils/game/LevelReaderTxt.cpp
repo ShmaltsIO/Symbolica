@@ -1,22 +1,22 @@
-#include "LevelReader.h"
+#include "LevelReaderTxt.h"
 #include <fstream>
 #include <iostream>
-LevelReader::LevelReader(): path_to_file_("") {}
+LevelReaderTxt::LevelReaderTxt(): path_to_file_("") {}
 
-void LevelReader::setPathToFile(std::string path) {
+void LevelReaderTxt::setPathToFile(std::string path) {
     path_to_file_ = path;
     //std::cout << path << std::endl;
 }
 
-std::string LevelReader::getPathToFile() {
+std::string LevelReaderTxt::getPathToFile() {
     return path_to_file_;
 }
 
-std::string LevelReader::getPathToFile() const {
+std::string LevelReaderTxt::getPathToFile() const {
     return path_to_file_;
 }
 
-Grid LevelReader::read() {
+Grid LevelReaderTxt::read() {
     char symbol = ' ';
     Grid game_map(1, 1);
     int x = 1;
@@ -56,7 +56,7 @@ Grid LevelReader::read() {
     return game_map;
 }
 
-bool LevelReader::checkFileExist() {
+bool LevelReaderTxt::checkFileExist() {
     std::ifstream in (path_to_file_);
     return in.is_open();    
 }

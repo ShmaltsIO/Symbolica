@@ -1,5 +1,5 @@
-#ifndef LEVEL_WRITER_H
-#define LEVEL_WRITER_H
+#ifndef LEVEL_WRITER_TXT_H
+#define LEVEL_WRITER_TXT_H
 
 #include "IWriter.h"
 #include <string>
@@ -8,11 +8,11 @@
 /**
  * @brief Class for writing game levels to special files. Implement saves in game.
  */
-class LevelWriter: public IWriter<Grid&> {
+class LevelWriterTxt: public IWriter<Grid&> {
 private:
     std::string path_to_file_;
 public:
-    LevelWriter();
+    LevelWriterTxt();
 
     void setPathToFile(std::string);
     std::string getPathToFile();
@@ -22,4 +22,4 @@ public:
     void write(Grid&) override;
 };
 
-#endif // LEVEL_WRITER_H
+#endif // LEVEL_WRITER_TXT_H
