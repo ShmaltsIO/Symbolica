@@ -1,15 +1,8 @@
 #include "IniParser.h"
-#include "ini.h"
-#include <iostream>
-#include <cctype>
-#include <algorithm>
 
 static int iniHandler(void* user, const char* section, const char* name, const char* value) {
     auto* parser = static_cast<IniParser*>(user);
-    // Можно сохранить в любом виде, например, в map с ключом "section/name"
-    // но проще вызвать метод parser->addValue(section, name, value)
-    // Сделаем прямо здесь через временный объект? Упростим: запишем в переданный map.
-    // Но нам нужен доступ к values_ парсера. Передадим указатель на map.
+
     static_cast<std::unordered_map<std::string, std::string>*>(user)->emplace(
         std::string(section) + "/" + name, value
     );

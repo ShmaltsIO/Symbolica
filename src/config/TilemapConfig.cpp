@@ -1,9 +1,4 @@
-// TilemapConfig.cpp
 #include "TilemapConfig.h"
-#include <fstream>
-#include <sstream>
-#include <cctype>
-#include "BearLibTerminal.h"
 
 bool TilemapConfig::load(const std::string& filename) {
     std::ifstream file(filename);
@@ -35,6 +30,7 @@ bool TilemapConfig::load(const std::string& filename) {
 
         std::string codeStr = line.substr(0, eqPos);
         std::string path = line.substr(eqPos + 1);
+
         // Удаляем пробелы вокруг
         codeStr.erase(0, codeStr.find_first_not_of(" \t"));
         codeStr.erase(codeStr.find_last_not_of(" \t") + 1);
@@ -73,9 +69,8 @@ void TilemapConfig::applyToTerminal(const std::string& section) {
     for (const auto& pair : itSec->second) {
         uint32_t code = pair.first;
         const std::string& path = pair.second;
+
         // Формируем команду для BearLibTerminal: "0x0058: assets/high/tileChest.png"
-        // Путь должен быть относительно рабочей директории, поэтому если в .ini у тебя "high/tileChest.png",
-        // а assets скопирована в папку сборки, то полный относительный путь будет "assets/high/tileChest.png"
         std::string cmd = "0x" + std::to_string(code) + ": assets/" + path;
         terminal_set(cmd.c_str());
     }

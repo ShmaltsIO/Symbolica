@@ -1,9 +1,15 @@
-// TilemapConfig.h
-#pragma once
+#ifndef TILEMAP_CONFIG_H
+#define TILEMAP_CONFIG_H
+
 #include <string>
 #include <unordered_map>
 #include <vector>
 #include <stdint.h>
+#include <fstream>
+#include <sstream>
+#include <cctype>
+
+#include "BearLibTerminal.h"
 
 class TilemapConfig {
 public:
@@ -23,3 +29,5 @@ private:
     // Вспомогательный парсинг строки вида "0x0058 = high/tileChest.png"
     bool parseLine(const std::string& line, uint32_t& code, std::string& path);
 };
+
+#endif // TILEMAP_CONFIG_H

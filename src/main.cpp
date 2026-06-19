@@ -29,6 +29,8 @@ int main() {
   std::cout << "Current working dir: " << fs::current_path() << std::endl;
   IniParser parser;
   std::string configStr;
+
+  TilemapConfig tilemap;
     
   if (parser.load("config/terminal.ini")) {
     // Читаем секцию [window]
@@ -48,15 +50,13 @@ int main() {
   terminal_open();
   terminal_set(configStr.c_str());
   
+  const char* version = terminal_get("version");
+  std::cout << "BearLibTerminal version: " << version << std::endl;      
+  int width = terminal_state(TK_WIDTH);   // ширина в ячейках
+  int height = terminal_state(TK_HEIGHT); // высота в ячейках
+  std::cout << "Actual terminal size: " << width << "x" << height << std::endl;
 
-
-  // const char* version = terminal_get("version");
-  // std::cout << "BearLibTerminal version: " << version << std::endl;      
-  // int width = terminal_state(TK_WIDTH);   // ширина в ячейках
-  // int height = terminal_state(TK_HEIGHT); // высота в ячейках
-  // std::cout << "Actual terminal size: " << width << "x" << height << std::endl;
-
-  TilemapConfig tilemap;
+  
   // if (!tilemap.load("config/tilemap.ini")) {
   //     // Обработка ошибки, возможно, используются встроенные значения по умолчанию
   //     terminal_print(1, 1, "ERROR: cannot load tilemap.ini");
@@ -79,7 +79,7 @@ int main() {
         std::cout << ch;
     }
     std::cout << '\n';
-}
+  }
   
   LevelReader lr;
   std::string path_to_file_ = ("levels/level1.txt");

@@ -3,6 +3,11 @@
 #include <string>
 #include <unordered_map>
 #include <optional>
+#include <iostream>
+#include <cctype>
+#include <algorithm>
+
+#include "ini.h"
 
 class IniParser {
 public:
