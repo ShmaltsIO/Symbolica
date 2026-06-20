@@ -1,6 +1,7 @@
 #include "GameOverScene.h"
 #include <BearLibTerminal.h>
 #include "SceneType.h"
+#include "TxtReader.h"
 
 GameOverScene::GameOverScene(Context *ctx, const Controls &controls) : IScene(ctx), controls_(controls) {}
 
@@ -8,14 +9,12 @@ void GameOverScene::OnCreate() {}
 
 void GameOverScene::OnRender() {
   terminal_clear();
-  // TODO: one backslash is \\ because compiler think, that's backslash is escape sequence like \n
-  terminal_print(1, 1, "╔══════════════════════════════════════════════════════════╗");
-  terminal_print(1, 2, "║   ___   ___  ___  ___  ____      ___   __ __  ____ ____  ║");
-  terminal_print(1, 3, "║  // \\\\ // \\\\ ||\\\\//|| ||        // \\\\  || || ||    || \\\\ ║");
-  terminal_print(1, 4, "║ (( ___ ||=|| || \\\\/|| ||==     ((   )) \\\\ // ||==  ||_// ║");
-  terminal_print(1, 5, "║  \\\\_|| || || ||    || ||___     \\\\_//  \\\\V/  ||___ || \\\\ ║");
-  terminal_print(1, 6, "║                                                          ║");
-  terminal_print(1, 7, "╚══════════════════════════════════════════════════════════╝");                     
+
+  TxtReader tr("assets/gui/low/lose.txt"); // TODO: make abstract
+
+  std::string sup = tr.read();
+
+  terminal_print(1, 1, sup.c_str());
   
   // Game Stats
   terminal_printf(1, 8, "Game statistics: name");

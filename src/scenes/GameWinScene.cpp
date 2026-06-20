@@ -1,5 +1,6 @@
 #include "GameWinScene.h"
 #include "SceneType.h"
+#include "TxtReader.h"
 
 GameWinScene::GameWinScene(Context* context, const Controls& controls):
  IScene(context), controls_(controls) {}
@@ -8,14 +9,12 @@ void GameWinScene::OnCreate() {}
 
 void GameWinScene::OnRender() {
     terminal_clear();
-    // TODO: one backslash is \\ because compiler think, that's backslash is escape sequence like \n
-    terminal_print(1, 1, "╔═══════════════════════════════════════════════════╗");
-    terminal_print(1, 2, "║   ___   ___  ___  ___  ____    __    __ __ __  __ ║");
-    terminal_print(1, 3, "║  // \\\\ // \\\\ ||\\\\//|| ||       ||    || || ||\\ || ║");
-    terminal_print(1, 4, "║ (( ___ ||=|| || \\/ || ||==     \\\\ /\\ // || ||\\\\|| ║");
-    terminal_print(1, 5, "║  \\\\_|| || || ||    || ||___     \\V/\\V/  || || \\|| ║");
-    terminal_print(1, 6, "║                                                   ║");
-    terminal_print(1, 7, "╚═══════════════════════════════════════════════════╝");                     
+
+    TxtReader tr("assets/gui/low/win.txt"); // TODO: ...
+
+    std::string sup = tr.read();
+
+    terminal_print(1, 1, sup.c_str());
     
     // Game Stats
     terminal_printf(1, 8, "Game statistics: name");

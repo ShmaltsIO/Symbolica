@@ -3,6 +3,7 @@
 //#include "SceneTypesEnum.h"
 #include <iostream>
 #include "SceneType.h"
+#include "TxtReader.h"
 
 TitleScene::TitleScene(Context *ctx, const Controls &controls) : IScene(ctx), controls_(controls) {}
 
@@ -38,15 +39,11 @@ void TitleScene::OnRender() {
   // }
   // Stop menu appear
   is_start = false;
-  terminal_print(x, y-8, "╔═════════════════════════════════════════════════════════════════════════════╗");
-  terminal_print(x, y-7, "║                                                                             ║");
-  terminal_print(x, y-6, "║    SSSSS  YY   YY MM    MM BBBBB    OOOOO  LL      IIIII  CCCCC    AAA      ║");
-  terminal_print(x, y-5, "║   SS      YY   YY MMM  MMM BB   B  OO   OO LL       III  CC    C  AAAAA     ║");
-  terminal_print(x, y-4, "║    SSSSS   YYYYY  MM MM MM BBBBBB  OO   OO LL       III  CC      AA   AA    ║");
-  terminal_print(x, y-3, "║        SS   YYY   MM    MM BB   BB OO   OO LL       III  CC    C AAAAAAA    ║");
-  terminal_print(x, y-2, "║    SSSSS    YYY   MM    MM BBBBBB   OOOOO  LLLLLLL IIIII  CCCCC  AA   AA    ║");
-  terminal_print(x, y-1, "║                                                                             ║");
-  terminal_print(x, y,   "╚═════════════════════════════════════════════════════════════════════════════╝");
+  TxtReader tr("assets/gui/low/logo.txt"); // TODO: make abstract
+
+  std::string sup = tr.read();
+  terminal_print(x, y - 8, sup.c_str());
+  
   // Print menu's punkts
   terminal_print(x*4, y+5, "Start game");
   terminal_print(x*4, y+7, "Load game");
