@@ -5,6 +5,7 @@
 #include "LevelComponent.h"
 #include "LocationComponent.h"
 #include "TransformComponent.h"
+#include "SceneType.h"
 
 RoomsSwitchSystem::RoomsSwitchSystem(EntityManager* const entity_manager, SystemManager* const system_manager, Context* context):
  ISystem(entity_manager, system_manager), context_(context) {}
@@ -24,8 +25,8 @@ void RoomsSwitchSystem::OnUpdate() {
                         //std::cout << "DOOR LEVEL and ECHO: " << current_room->current_location_ << " " << room_number->getLevel();
                         current_room->current_location_ = room_number->getLevel();
 
-                        context_->room_ = room_number->getLevel();
-                        context_->scene_ = "loading";
+                        context_->game_state->setRoomNumber(room_number->getLevel());
+                        context_->scene = SceneType::LoadingScene;
                     }
                 }
             }

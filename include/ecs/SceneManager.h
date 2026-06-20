@@ -6,6 +6,7 @@
 
 #include "Context.h"
 #include "IScene.h"
+#include "SceneType.h"
 
 /**
  * @brief Scene manager conrols a life cycle of scenes.
@@ -14,9 +15,9 @@
  */
 class SceneManager {
 private:
-  std::map<std::string, std::unique_ptr<IScene>> scenes_;
+  std::map<SceneType, std::unique_ptr<IScene>> scenes_;
   const Context& ctx_;
-  std::string current_scene_ = "";
+  SceneType current_scene = SceneType::TitleScene;
 
  public:
   explicit SceneManager(const Context& ctx);
@@ -29,7 +30,7 @@ private:
    * @param name is name of scene.
    * @param scene is pointer to scene.
    */
-  void Put(const std::string& name, IScene* scene);
+  void Put(const SceneType& name, IScene* scene);
 };
 
 #endif  // SCENE_MANAGER_H

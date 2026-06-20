@@ -1,5 +1,6 @@
 #include "SettingsScene.h"
 #include "BearLibTerminal.h"
+#include "SceneType.h"
 
 SettingsScene::SettingsScene(Context* context, const Controls& controls):
  IScene(context), controls_(controls) {}
@@ -26,7 +27,7 @@ void SettingsScene::OnRender() {
     }
     // Go back to main menu (title)
     if (controls_.IsPressed(TK_ESCAPE)) {
-        context_->scene_ = "title";
+        context_->scene = SceneType::TitleScene;
     }
 }
 

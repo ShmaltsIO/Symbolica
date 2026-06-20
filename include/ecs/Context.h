@@ -4,6 +4,11 @@
 #include <string>
 #include <TilemapConfig.h>
 
+#include "UISettings.h"
+#include "GameStatistics.h"
+#include "GameState.h"
+#include "SceneType.h"
+
 /**
  * @brief Context have information about actual scene, which should be displayed now.
  * 
@@ -18,17 +23,12 @@
  */
 class Context {
  public:
-  std::string scene_ = "";
-  unsigned int score = 0;
-  unsigned int steps_completed = 0;
-  unsigned int money_collected_ = 0;
-  unsigned int enemies_beaten_ = 0;
-  unsigned int room_ = 1;
-  bool is_load = false;
-  bool is_game_over = false;
-  bool is_start = false;
+  SceneType scene = SceneType::TitleScene;
+
+  UISettings* ui_settings = nullptr;
   TilemapConfig* tilemapConfig = nullptr; // или unique_ptr, но проще сырой указатель
-  // map for statistics
+  GameStatistics* game_stats = nullptr;
+  GameState* game_state = nullptr;
 };
 
 #endif  // CONTEXT_H

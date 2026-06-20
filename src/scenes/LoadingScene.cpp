@@ -1,5 +1,6 @@
 #include "LoadingScene.h"
 #include "BearLibTerminal.h"
+#include "SceneType.h"
 
 LoadingScene::LoadingScene(Context* ctx): IScene(ctx) {}
 
@@ -27,13 +28,12 @@ void LoadingScene::OnCreate() {
     terminal_clear();
     terminal_color("white");
     terminal_print(1, 1, "LOADING @ @ @");
-    terminal_printf(3, 3, "Level: %d", context_->room_);
+    terminal_printf(3, 3, "Level: %d", context_->game_state->getRoomNumber());
     terminal_refresh();
     terminal_delay(2000);
     terminal_clear();
 
-    context_->is_load = true;
-    context_->scene_ = "game";
+    context_->scene = SceneType::GameScene;
 }
 
 void LoadingScene::OnRender() {

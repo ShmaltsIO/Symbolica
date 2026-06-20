@@ -2,6 +2,8 @@
 #include <BearLibTerminal.h>
 //#include "SceneTypesEnum.h"
 #include <iostream>
+#include "SceneType.h"
+
 TitleScene::TitleScene(Context *ctx, const Controls &controls) : IScene(ctx), controls_(controls) {}
 
 void TitleScene::OnCreate() {
@@ -74,18 +76,18 @@ void TitleScene::OnRender() {
     switch (offset)
     {
       case (5):
-        context_->scene_ = "game";
-        context_->is_start = true;
+        context_->scene = SceneType::GameScene;
+        //context_->is_start = true;
         break;
       case (7):
         /* code */
         // is_load = true;
         break;
       case (9):
-        context_->scene_ = "settings";
+        context_->scene = SceneType::SettingsScene;
         break;
       case (11):
-        context_->scene_ = "exit";
+        //context_->scene = "exit";
         break;
       
       default:

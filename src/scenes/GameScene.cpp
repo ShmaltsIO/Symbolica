@@ -77,7 +77,7 @@ void GameScene::OnCreate() {
   std::cout << "Rabota 3" << std::endl;
 
   // If we came from Title Scene, clicked on START GAME, init. empty hero, else load from copy
-  if (context_->is_start) {
+  if (context_->scene == SceneType::GameScene) {
     {
       auto player = engine.GetEntityManager()->CreateEntity();
       player->Add<TransformComponent>(Vector2D(0, 0));
@@ -133,8 +133,8 @@ void GameScene::OnCreate() {
 
   // Load first level if new game, else continue (also includes switches between rooms)
   std::cout << "Rabota 67" << std::endl;
-  if (context_->is_start) {
-    context_->is_start = false;
+  if (context_->scene == SceneType::GameScene) {
+    //context_->is_start = false;
     level_map.level_number_ = 1;
     level_path = "levels/level1.txt";
     std::vector<Vector2D> path;
@@ -181,7 +181,7 @@ void GameScene::OnCreate() {
   // TODO: maybe pattern 'Factory' can make this more easy?
   // Adding entities
   Vector2D current_pos(0, 0);
-  unsigned int doors_level = context_->room_;
+  unsigned int doors_level = context_->game_state->getRoomNumber();
   std::cout << "DOORS LEVEL: " << doors_level << std::endl;
   // level_map = generateLevelMOD(20, 20, 1);
   
@@ -423,8 +423,8 @@ void GameScene::OnRender() {
 
 void GameScene::OnExit() {
   // TODO: maybe create spcial system for stats? Because that's cringe :/
-  context_->steps_completed = engine.GetEntityManager()->Get(2)->Get<StepComponent>()->getSteps();
-  context_->money_collected_ = engine.GetEntityManager()->Get(2)->Get<WorthComponent>()->getWorth();
+  context_->game_stats->setStepsCompleted(engine.GetEntityManager()->Get(2)->Get<StepComponent>()->getSteps());
+  context_->game_stats->setMoneyCollected(engine.GetEntityManager()->Get(2)->Get<WorthComponent>()->getWorth());
   // TODO: why this don't working? Because Engine contain unique_ptr...
   // for (auto& entity : engine.GetEntityManager()) {
   //   if (entity.second.Contains<PlayerTagComponent>()) {

@@ -1,0 +1,9 @@
+﻿╔═════════════════════════════════════════════════════════════════════════════╗
+║                                                                             ║
+║    SSSSS  YY   YY MM    MM BBBBB    OOOOO  LL      IIIII  CCCCC    AAA      ║
+║   SS      YY   YY MMM  MMM BB   B  OO   OO LL       III  CC    C  AAAAA     ║
+║    SSSSS   YYYYY  MM MM MM BBBBBB  OO   OO LL       III  CC      AA   AA    ║
+║        SS   YYY   MM    MM BB   BB OO   OO LL       III  CC    C AAAAAAA    ║
+║    SSSSS    YYY   MM    MM BBBBBB   OOOOO  LLLLLLL IIIII  CCCCC  AA   AA    ║
+║                                                                             ║
+╚═════════════════════════════════════════════════════════════════════════════╝

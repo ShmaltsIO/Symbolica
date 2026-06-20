@@ -18,32 +18,29 @@
 #include "IniParser.h"
 #include "DungeonGenerator.h"
 #include "Map.h"
+#include "UISettings.h"
+#include "GameState.h"
+#include "GameStatistics.h"
 namespace fs = std::filesystem;
 
 #include "RoomGenerator.h"
 #include <TilemapConfig.h>
+#include "SceneType.h"
 using namespace std;
 
 int main() {
-  // --- НАСТРОЙКА ТЕРМИНАЛА ---
+  // --- TERMINAL settings ---
   std::cout << "Current working dir: " << fs::current_path() << std::endl;
   IniParser parser;
   std::string configStr;
-
-  TilemapConfig tilemap;
     
   if (parser.load("config/terminal.ini")) {
-    // Читаем секцию [window]
     std::string title = parser.getString("window", "title", "Symbolica");
     bool resizeable = parser.getBool("window", "resizeable", true);
     std::string size = parser.getString("window", "size", "150x50");
         
     configStr = "window.title='" + title + "'; window.resizeable=" + (resizeable ? "true" : "false") + "; window.size=" + size;
-      
-    // Можно добавить и другие секции, например, [font], но для BearLibTerminal все параметры плоские.
-    std::cout << "Terminal config: " << configStr << std::endl;
   } else {
-    // fallback
     configStr = "window.title='Symbolica'; window.resizeable=true; window.size=150x50";
   }
   
@@ -56,15 +53,20 @@ int main() {
   int height = terminal_state(TK_HEIGHT); // высота в ячейках
   std::cout << "Actual terminal size: " << width << "x" << height << std::endl;
 
+  // --- GRAPHICS settings ---
+
+  TilemapConfig tilemap;
   
-  // if (!tilemap.load("config/tilemap.ini")) {
-  //     // Обработка ошибки, возможно, используются встроенные значения по умолчанию
-  //     terminal_print(1, 1, "ERROR: cannot load tilemap.ini");
-  // }
+  if (!tilemap.load("config/tilemap.ini")) {
+    terminal_print(width-1, height-1, "ERROR: cannot load tilemap.ini");
+    std::cout << "ERROR: cannot load tilemap.ini" << std::endl;
+  }
 
   // При старте применяешь настройки графики (например, высокое качество)
   // tilemap.applyToTerminal("graphics_high");
   // tilemap.applyToTerminal("gui"); // если нужно для интерфейса
+
+  // --- TEST ZONE ---
 
   std::cout << "Dungeon Generation..." << std::endl;
   DungeonGenerator dg = DungeonGenerator();
@@ -89,7 +91,7 @@ int main() {
   
   std::cout << "LEVEL READER:" << level << std::endl;
 
-  cout << "START MAIN" << endl;
+  // --- GAME START ---
   
   terminal_refresh();
 
@@ -98,21 +100,24 @@ int main() {
   Context ctx{};
   SceneManager sm(ctx);
 
-  sm.Put("title", new TitleScene(&ctx, controls));
-  sm.Put("settings", new SettingsScene(&ctx, controls));
-  sm.Put("loading", new LoadingScene(&ctx));
-  sm.Put("game", new GameScene(&ctx, controls));
-  sm.Put("game_over", new GameOverScene(&ctx, controls));
-  sm.Put("game_win", new GameWinScene(&ctx, controls));
+  sm.Put(SceneType::TitleScene, new TitleScene(&ctx, controls));
+  sm.Put(SceneType::SettingsScene, new SettingsScene(&ctx, controls));
+  sm.Put(SceneType::LoadingScene, new LoadingScene(&ctx));
+  sm.Put(SceneType::GameScene, new GameScene(&ctx, controls));
+  sm.Put(SceneType::GameOverScene, new GameOverScene(&ctx, controls));
+  sm.Put(SceneType::GameWinScene, new GameWinScene(&ctx, controls));
 
   // Start scene
-  ctx.scene_ = "title";
+  ctx.scene = SceneType::TitleScene;
   ctx.tilemapConfig = &tilemap;
+  ctx.ui_settings = new UISettings(5, width, height);
+  ctx.game_state = new GameState(1);
+  ctx.game_stats = new GameStatistics();
 
   // Simple game loop
   while (true) {
     controls.OnUpdate();
-    if (controls.IsPressed(TK_CLOSE) || ctx.scene_ == "exit") {
+    if (controls.IsPressed(TK_CLOSE)) {
       break;
     }
 
