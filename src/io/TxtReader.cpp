@@ -30,6 +30,7 @@ std::string TxtReader::read() {
         {
             line += "\n";
             content += line;
+            lines_count++;
         }
         content.pop_back();
         
@@ -42,3 +43,5 @@ std::string TxtReader::read() {
 
     return content;
 }
+
+unsigned int TxtReader::getLinesCount() { return lines_count; }

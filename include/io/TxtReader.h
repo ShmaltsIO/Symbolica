@@ -10,6 +10,7 @@
 class TxtReader : public IReader<std::string> {
 private:
     std::string path_to_file_;
+    unsigned int lines_count = 0;
 
 public:
     TxtReader() = default;
@@ -20,6 +21,7 @@ public:
     void setPathToFile(const std::string& path);
     std::string getPathToFile() const;
     bool fileExists() const;
+    unsigned int getLinesCount();
     std::string read() override;
 };
 

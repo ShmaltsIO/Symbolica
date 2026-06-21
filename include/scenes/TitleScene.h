@@ -1,8 +1,13 @@
 #ifndef TITLE_SCENE_H
 #define TITLE_SCENE_H
 
+#include <BearLibTerminal.h>
+#include <iostream>
+
 #include "IScene.h"
 #include "Controls.h"
+#include "SceneType.h"
+#include "TxtReader.h"
 
 class TitleScene : public IScene {
 private:

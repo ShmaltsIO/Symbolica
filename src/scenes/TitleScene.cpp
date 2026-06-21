@@ -1,9 +1,4 @@
 #include "TitleScene.h"
-#include <BearLibTerminal.h>
-//#include "SceneTypesEnum.h"
-#include <iostream>
-#include "SceneType.h"
-#include "TxtReader.h"
 
 TitleScene::TitleScene(Context *ctx, const Controls &controls) : IScene(ctx), controls_(controls) {}
 
@@ -12,46 +7,45 @@ void TitleScene::OnCreate() {
 }
 
 void TitleScene::OnRender() {
-  // TODO: How control the size of window?
   terminal_clear();
-  int x = 10;
-  int y = 0;
-  // If is first game, play animation else no
-  if (!is_start) {
-    y = 12;
-  }
-  // Play animation
-  // while(y != 12) {
-  //   std::cout << "Y: " << y << std::endl;
-  //   terminal_clear();
-  //   terminal_print(x, y-8, "╔═════════════════════════════════════════════════════════════════════════════╗");
-  //   terminal_print(x, y-7, "║                                                                             ║");
-  //   terminal_print(x, y-6, "║    SSSSS  YY   YY MM    MM BBBBB    OOOOO  LL      IIIII  CCCCC    AAA      ║");
-  //   terminal_print(x, y-5, "║   SS      YY   YY MMM  MMM BB   B  OO   OO LL       III  CC    C  AAAAA     ║");
-  //   terminal_print(x, y-4, "║    SSSSS   YYYYY  MM MM MM BBBBBB  OO   OO LL       III  CC      AA   AA    ║");
-  //   terminal_print(x, y-3, "║        SS   YYY   MM    MM BB   BB OO   OO LL       III  CC    C AAAAAAA    ║");
-  //   terminal_print(x, y-2, "║    SSSSS    YYY   MM    MM BBBBBB   OOOOO  LLLLLLL IIIII  CCCCC  AA   AA    ║");
-  //   terminal_print(x, y-1, "║                                                                             ║");
-  //   terminal_print(x, y,   "╚═════════════════════════════════════════════════════════════════════════════╝");
-  //   terminal_refresh();
-  //   terminal_delay(200);
-  //   y++;
-  // }
-  // Stop menu appear
-  is_start = false;
+
+  terminal_put(30, 30, 0x1000); // TEST SYMBOLS
+  
+  unsigned int x = context_->ui_settings->getPaddingWidth()*5;
+  unsigned int y = context_->ui_settings->getPaddingHeight()*2;
+
   TxtReader tr("assets/gui/low/logo.txt"); // TODO: make abstract
 
   std::string sup = tr.read();
-  terminal_print(x, y - 8, sup.c_str());
-  
+
+  // If is first game, play animation else no
+  if (is_start) {
+    unsigned int iter = 0;
+
+    while(iter != y) {
+      terminal_clear();
+      terminal_print(x, iter, sup.c_str());
+      terminal_refresh();
+      terminal_delay(300);
+      iter++;
+    }
+
+    is_start = !is_start;
+  }
+
+  terminal_print(x, y, sup.c_str());
+
+  y = y + tr.getLinesCount();
+  x *= 2;
+
   // Print menu's punkts
-  terminal_print(x*4, y+5, "Start game");
-  terminal_print(x*4, y+7, "Load game");
-  terminal_print(x*4, y+9, "Setting");
-  terminal_print(x*4, y+11, "Еxit");
+  terminal_print(x, y+5, "Start game");
+  terminal_print(x, y+7, "Load game");
+  terminal_print(x, y+9, "Setting");
+  terminal_print(x, y+11, "Еxit");
   // Print selection thing
-  terminal_print(x*4-3, y+offset, "@");
-  terminal_put(30, 30, 0x1000);
+  terminal_print(x-3, y+offset, "->");
+  
   terminal_refresh();
   
   // Change offset
@@ -68,23 +62,22 @@ void TitleScene::OnRender() {
   if (offset < 5) {
     offset = 11;
   }
+
   // switch menu's punkt
   if (controls_.IsPressed(TK_ENTER)) {
     switch (offset)
     {
       case (5):
         context_->scene = SceneType::GameScene;
-        //context_->is_start = true;
         break;
       case (7):
-        /* code */
-        // is_load = true;
+          /* code */
         break;
       case (9):
         context_->scene = SceneType::SettingsScene;
         break;
       case (11):
-        //context_->scene = "exit";
+          /* code */
         break;
       
       default:

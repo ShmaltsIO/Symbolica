@@ -1,6 +1,7 @@
 #include "SettingsScene.h"
 #include "BearLibTerminal.h"
 #include "SceneType.h"
+#include "TxtReader.h"
 
 SettingsScene::SettingsScene(Context* context, const Controls& controls):
  IScene(context), controls_(controls) {}
@@ -9,12 +10,24 @@ void SettingsScene::OnCreate() {}
 
 void SettingsScene::OnRender() {
     terminal_clear();
-    //terminal_set("font: ./assets/fonts/Prototype.ttf, size=12");
-    terminal_print(1, 1, "If you want change graphics, just press F to pay signal for high-quality switcher!");
-    terminal_print(3, 3, "For go back to menu, press ЕSC (ЕSCAPЕ)");
-    terminal_print(4, 4, "See, how change the graphics:");
-    terminal_put(5, 5, 0x0023);
-    // terminal_print(7, 7, "WARNING: some symbols can be incorrect");
+
+    //terminal_set("font: ./assets/fonts/Prototype.ttf, size=12"); // Experiment
+
+    TxtReader tr("assets/gui/low/settings.txt"); // TODO: ...
+
+    std::string sup = tr.read();
+
+    unsigned int x = context_->ui_settings->getPaddingWidth() * 6;
+    unsigned int y = context_->ui_settings->getPaddingHeight() * 2;
+
+    terminal_print(x, y, sup.c_str());
+
+    y = y + tr.getLinesCount() + 1;
+
+    terminal_print(x, y, "If you want change graphics, just press F to pay signal for high-quality switcher!");
+    terminal_print(x, y+1, "For go back to menu, press ЕSC (ЕSCAPЕ)");
+    terminal_print(x, y+2, "See, how change the graphics:");
+    
     terminal_refresh();
 
     if (controls_.IsPressed(TK_F)) {
