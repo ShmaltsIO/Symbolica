@@ -9,7 +9,7 @@
  */
 class LevelComponent: public IComponent {
 private:
-    unsigned int level_;
+    unsigned int level_ = 1;
 public:
     LevelComponent();
     LevelComponent(unsigned int);

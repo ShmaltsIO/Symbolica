@@ -1,0 +1,131 @@
+{
+  "spawn": {
+    "enemies": {
+      "base_count": 3,
+      "base_health": 5,
+      "base_damage": 1,
+      "max_per_room": 100,
+      "weights": {
+        "distance_factor": 0.7,
+        "random_factor": 0.3
+      },
+      "types": [
+        {
+          "id": "goblin",
+          "min_depth": 1
+        },
+        {
+          "id": "orc",
+          "min_depth": 3
+        },
+        {
+          "id": "troll",
+          "min_depth": 5
+        },
+        {
+          "id": "demon",
+          "min_depth": 8
+        }
+      ]
+    },
+    "rooms": [
+      {
+        "id": "castle",
+        "enemy_species": [ "common", "dead", "simple", "cursed", "sleepy" ],
+        "weight": 70
+      },
+      {
+        "id": "forest",
+        "enemy_species": [ "dead", "poisoned", "cursed", "old", "overgrown" ],
+        "weight": 20
+      },
+      {
+        "id": "fridge",
+        "enemy_species": [ "dead", "freezed", "frostbitten", "thawed", "icy" ],
+        "weight": 10
+      }
+    ],
+    //"titles": [ for hero name, later
+    //  "common", "epic", "diamond"
+    //],
+    "items": {
+      "base_count": 5,
+      "per_depth": 3,
+      "types": [
+        {
+          "id": "coin",
+          "weight": 60,
+          "min_depth": 1
+        },
+        {
+          "id": "food",
+          "weight": 30,
+          "min_depth": 1
+        },
+        {
+          "id": "potion",
+          "weight": 10,
+          "min_depth": 2
+        }
+      ]
+    },
+    "armor_classes": [
+      {
+        "id": "light",
+        "class": 1,
+        "titles": [ "fabric", "sewn", "felt" ]
+      },
+      {
+        "id": "common",
+        "class": 2,
+        "titles": [ "copper", "iron", "wood" ]
+      },
+      {
+        "id": "heavy",
+        "class": 3,
+        "titles": [ "steel", "incredible", "legendary" ]
+      }
+    ],
+    "weapon_classes": [
+      {
+        "id": "sword",
+        "class": 1,
+        "titles": [ "copper", "iron", "wood" ]
+      },
+      {
+        "id": "spear",
+        "class": 2,
+        "titles": [ "copper", "iron", "wood" ]
+      },
+      {
+        "id": "glaive",
+        "class": 3,
+        "titles": [ "copper", "iron", "wood" ]
+      }
+    ],
+    "bosses": {
+      "first_appear": 5,
+      "every": 5,
+      "types": [
+        {
+          "id": "dragon",
+          "min_depth": 5
+        },
+        {
+          "id": "lich",
+          "min_depth": 10
+        }
+      ]
+    },
+    "chests": {
+      "base_count": 1,
+      "every": 4,
+      "loot": {
+        "coin": 0.4,
+        "potion": 0.3,
+        "weapon": 0.2,
+        "armor": 0.1
+      }
+    }
+  }
+}

@@ -60,6 +60,9 @@ void DungeonGenerator::createRooms(BSPNode* node, Map& map) {
 
     node->room = { roomX, roomY, roomW, roomH,
                    roomX + roomW / 2, roomY + roomH / 2 };
+
+    rooms_.push_back(node->room);
+
     carveRoom(map, node->room);
 }
 
@@ -115,3 +118,5 @@ bool DungeonGenerator::isInsideMap(const Map& map, int x, int y) const {
     return x >= 0 && x < static_cast<int>(map.getWidth()) &&
            y >= 0 && y < static_cast<int>(map.getHeight());
 }
+
+const std::vector<BSPRoom>& DungeonGenerator::getRooms() const { return rooms_; }

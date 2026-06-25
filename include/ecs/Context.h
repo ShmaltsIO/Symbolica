@@ -8,6 +8,8 @@
 #include "GameStatistics.h"
 #include "GameState.h"
 #include "SceneType.h"
+#include "SpawnConfig.h"
+#include "DungeonGenerator.h"
 
 /**
  * @brief Context have information about actual scene, which should be displayed now.
@@ -29,6 +31,8 @@ class Context {
   TilemapConfig* tilemapConfig = nullptr; // или unique_ptr, но проще сырой указатель
   GameStatistics* game_stats = nullptr;
   GameState* game_state = nullptr;
+  SpawnConfig* spawnConfig = nullptr;
+  DungeonGenerator* dungeon_generator = nullptr;
 };
 
 #endif  // CONTEXT_H

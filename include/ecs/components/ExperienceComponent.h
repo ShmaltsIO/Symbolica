@@ -10,8 +10,8 @@
  */
 class ExperienceComponent: public IComponent {
 private:
-    unsigned int experience_;
-    unsigned int experience_limit_;
+    unsigned int experience_ = 0;
+    unsigned int experience_limit_ = 10;
 public:
     ExperienceComponent();
     ExperienceComponent(unsigned int, unsigned int);
