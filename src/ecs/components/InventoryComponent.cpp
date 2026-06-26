@@ -7,7 +7,7 @@ const ItemComponent& InventoryComponent::getItem(unsigned int index) const {
     return items_[index];
 }
 
-void InventoryComponent::addItem(const std::string& prefabId, unsigned int count) {
+void InventoryComponent::addItem(const std::string& prefabId, unsigned int count, ItemStats stats) {
     for (auto& item : items_) {
         if (item.getPrefabId() == prefabId) {
             item.addCount(count);
@@ -15,7 +15,7 @@ void InventoryComponent::addItem(const std::string& prefabId, unsigned int count
         }
     }
     if (items_.size() < max_inventory_size) {
-        items_.emplace_back(prefabId, count);
+        items_.push_back(ItemComponent(prefabId, count, stats));
     }
 }
 

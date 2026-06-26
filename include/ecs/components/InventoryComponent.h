@@ -1,8 +1,10 @@
 #ifndef INVENTORY_COMPONENT_H
 #define INVENTORY_COMPONENT_H
 
-#include "ItemComponent.h"
 #include <vector>
+
+#include "ItemComponent.h"
+#include "ItemStats.h"
 
 class InventoryComponent: public IComponent {
 private:
@@ -14,7 +16,7 @@ public:
     InventoryComponent() = default;
     InventoryComponent(std::vector<ItemComponent> items, unsigned int max_size, unsigned int current_index): items_(items), max_inventory_size(max_size), selected_item_number(current_index) {}
 
-    void addItem(const std::string& prefabId, unsigned int count);
+    void addItem(const std::string& prefabId, unsigned int count, ItemStats stats);
     void removeItem(unsigned int index, unsigned int count);
     void setSelectedItemNumber(unsigned int);
     void incSelectedItemNumber();

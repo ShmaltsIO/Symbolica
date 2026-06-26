@@ -15,3 +15,11 @@ void ItemComponent::setCount(unsigned int count) {
 void ItemComponent::addCount(unsigned int delta) {
 	count_ += delta;
 }
+
+const ItemStats& ItemComponent::getStats() const {
+	return stats_;
+}
+
+void ItemComponent::setStats(const ItemStats& stats) {
+	stats_ = stats;
+}

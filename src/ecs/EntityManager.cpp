@@ -24,39 +24,3 @@ Entity* EntityManager::Get(size_t id) const {
     }
     return entities_.at(id).get();
 }
-
-EntityManager::Iterator::Iterator(const std::map<size_t, std::unique_ptr<Entity>>::iterator& iterator) : iterator_(iterator) {}
-
-EntityManager::Iterator EntityManager::Iterator::operator++() {
-      iterator_.operator++();
-      return *this;
-}
-
-EntityManager::Iterator EntityManager::Iterator::operator++(int step) {
-      iterator_.operator++(step);
-      return *this;
-}
-
-Entity& EntityManager::Iterator::operator*() {
-      return *iterator_.operator*().second;
-}
-
-Entity* EntityManager::Iterator::operator->() {
-      return iterator_.operator*().second.get();
-}
-
-bool EntityManager::Iterator::operator==(const Iterator& rhs) {
-      return iterator_ == rhs.iterator_;
-}
-
-bool EntityManager::Iterator::operator!=(const Iterator& rhs) {
-      return iterator_ != rhs.iterator_;
-}
-
-EntityManager::Iterator EntityManager::begin() {
-    return Iterator{entities_.begin()};
-}
-
-EntityManager::Iterator EntityManager::end() {
-    return Iterator{entities_.end()};
-}
