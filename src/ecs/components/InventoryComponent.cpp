@@ -1,20 +1,33 @@
 #include "InventoryComponent.h"
 
-InventoryComponent::InventoryComponent(): items_(), current_inventory_size(0), max_inventory_size(10), selected_item_number(0) {}
-
-InventoryComponent::InventoryComponent(std::vector<ItemComponent> items, unsigned int current_size, unsigned int max_size):
- items_(items), current_inventory_size(current_size), max_inventory_size(max_size), selected_item_number(0) {}
-
-void InventoryComponent::addItem(ItemComponent item) {
-    items_.emplace_back(item);
-    current_inventory_size++;
-    selected_item_number++;
+ItemComponent& InventoryComponent::getItem(unsigned int index) {
+    return items_[index];
+}
+const ItemComponent& InventoryComponent::getItem(unsigned int index) const {
+    return items_[index];
 }
 
-void InventoryComponent::deleteItem(unsigned int number) {
-    items_.erase(items_.cbegin() + number);
-    current_inventory_size--;
-    selected_item_number--;
+void InventoryComponent::addItem(const std::string& prefabId, unsigned int count) {
+    for (auto& item : items_) {
+        if (item.getPrefabId() == prefabId) {
+            item.addCount(count);
+            return;
+        }
+    }
+    if (items_.size() < max_inventory_size) {
+        items_.emplace_back(prefabId, count);
+    }
+}
+
+void InventoryComponent::removeItem(unsigned int index, unsigned int count) {
+    auto& item = items_[index];
+    if (item.getCount() > count) {
+        item.addCount(-count);
+    }
+    else {
+        items_.erase(items_.begin() + index);
+        if (selected_item_number >= items_.size()) selected_item_number = items_.size() - 1;
+    }
 }
 
 void InventoryComponent::incSelectedItemNumber() {
@@ -25,24 +38,12 @@ void InventoryComponent::decSelectedItemNumber() {
     selected_item_number--;
 }
 
-ItemComponent InventoryComponent::getItem() {
-    if (selected_item_number == 0 || current_inventory_size == 0) {
-        return ItemComponent();
-    } else {
-        return items_[selected_item_number-1];
-    }
-}
-
-ItemComponent InventoryComponent::getItem() const {
-    return items_[selected_item_number-1];
-}
-
 std::vector<ItemComponent> InventoryComponent::getInventory() {
     return items_;
 }
 
 unsigned int InventoryComponent::getCurrentSize() {
-    return current_inventory_size;
+    return items_.size();
 }
 
 unsigned int InventoryComponent::getMaxSize() {
@@ -58,7 +59,7 @@ std::vector<ItemComponent> InventoryComponent::getInventory() const {
 }
 
 unsigned int InventoryComponent::getCurrentSize() const {
-    return current_inventory_size;
+    return items_.size();
 }
 
 unsigned int InventoryComponent::getMaxSize() const {

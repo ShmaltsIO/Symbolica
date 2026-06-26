@@ -7,22 +7,21 @@
 class InventoryComponent: public IComponent {
 private:
     std::vector<ItemComponent> items_;
-    unsigned int current_inventory_size = 0;
     unsigned int max_inventory_size = 10;
     unsigned int selected_item_number = 0;
 
 public:
-    InventoryComponent();
-    InventoryComponent(std::vector<ItemComponent>, unsigned int, unsigned int);
+    InventoryComponent() = default;
+    InventoryComponent(std::vector<ItemComponent> items, unsigned int max_size, unsigned int current_index): items_(items), max_inventory_size(max_size), selected_item_number(current_index) {}
 
-    void addItem(ItemComponent);
-    void deleteItem(unsigned int);
+    void addItem(const std::string& prefabId, unsigned int count);
+    void removeItem(unsigned int index, unsigned int count);
     void setSelectedItemNumber(unsigned int);
     void incSelectedItemNumber();
     void decSelectedItemNumber();
     
-    ItemComponent getItem();
-    ItemComponent getItem() const;
+    ItemComponent& getItem(unsigned int index);
+    const ItemComponent& getItem(unsigned int index) const;
 
     std::vector<ItemComponent> getInventory();
     unsigned int getCurrentSize();

@@ -1,0 +1,20 @@
+{
+  "health_potion": {
+    "name": "Зелье здоровья",
+    "description": "Восстанавливает некоторое количество здоровья",
+    "worth": 3,
+    "base_heal": 10
+  },
+  "sword": {
+    "name": "Меч",
+    "description": "Обычный меч",
+    "worth": 5,
+    "base_damage": 2
+  },
+  "armor": {
+    "name": "Латы",
+    "description": "Хорошо защищает тело",
+    "worth": 7,
+    "base_protection": 2
+  }
+}

@@ -80,50 +80,50 @@ void InventoryControlSystem::OnUpdate() {
                 ic_p->incSelectedItemNumber();
             }
 
-            if (controls_.IsPressed(TK_R)) {
-                // use
-                size_t id = ic_p->getItem().getItemId();
-                if (!(id == 0)) {
-                    auto item = GetEntityManager().Get(id);
+            //if (controls_.IsPressed(TK_R)) {
+            //    // use
+            //    size_t id = ic_p->getItem().getItemId();
+            //    if (!(id == 0)) {
+            //        auto item = GetEntityManager().Get(id);
 
-                    if (useItem(player, *item)) {
-                        ic_p->deleteItem(ic_p->getSelectedItemNumber());
-                        GetEntityManager().DeleteEntity(id);
-                    }
-                }
+            //        if (useItem(player, *item)) {
+            //            ic_p->deleteItem(ic_p->getSelectedItemNumber());
+            //            GetEntityManager().DeleteEntity(id);
+            //        }
+            //    }
 
-                // Create special utilits function in this system, that's will be
-                // analyses the tag of item and use it in right way
-            }
+            //    // Create special utilits function in this system, that's will be
+            //    // analyses the tag of item and use it in right way
+            //}
 
-            if (controls_.IsPressed(TK_Q)) {
-                auto tc_p = player.Get<TransformComponent>();
-                size_t id = ic_p->getItem().getItemId();
-                if (!(id == 0)) {
-                    auto item = GetEntityManager().Get(id);
-                    auto ec_p = player.Get<EquipmentComponent>();
+            //if (controls_.IsPressed(TK_Q)) {
+            //    auto tc_p = player.Get<TransformComponent>();
+            //    size_t id = ic_p->getItem().getItemId();
+            //    if (!(id == 0)) {
+            //        auto item = GetEntityManager().Get(id);
+            //        auto ec_p = player.Get<EquipmentComponent>();
 
-                    if (item->Contains<WeaponTagComponent>()) {
-                        auto dc_p = player.Get<DamageComponent>();
-                        dc_p->setBonusDamage(0);
-                        ec_p->setRightHand(0);
-                    }
+            //        if (item->Contains<WeaponTagComponent>()) {
+            //            auto dc_p = player.Get<DamageComponent>();
+            //            dc_p->setBonusDamage(0);
+            //            ec_p->setRightHand(0);
+            //        }
 
-                    if (item->Contains<ArmorTagComponent>()) {
-                        auto pc_p = player.Get<ProtectionComponent>();
-                        pc_p->setProtection(0);
-                        ec_p->setChest(0);
-                    }
+            //        if (item->Contains<ArmorTagComponent>()) {
+            //            auto pc_p = player.Get<ProtectionComponent>();
+            //            pc_p->setProtection(0);
+            //            ec_p->setChest(0);
+            //        }
 
-                    item->Add<TransformComponent>(Vector2D(tc_p->position_));
-                    item->Get<OnPlaceComponent>()->enable();
+            //        item->Add<TransformComponent>(Vector2D(tc_p->position_));
+            //        item->Get<OnPlaceComponent>()->enable();
 
-                    ic_p->deleteItem(ic_p->getSelectedItemNumber());
-                }
-                // create bool field it_was_dropped in food entity in itemTag or same
-                // and if we click on Q, this field change and player, while stay on place, save this 
-                // bool state it_was_dropped = true, when he walking, is_was_dropped = false
-            }
+            //        ic_p->deleteItem(ic_p->getSelectedItemNumber());
+            //    }
+            //    // create bool field it_was_dropped in food entity in itemTag or same
+            //    // and if we click on Q, this field change and player, while stay on place, save this 
+            //    // bool state it_was_dropped = true, when he walking, is_was_dropped = false
+            //}
 
             if (ic_p->getSelectedItemNumber() > ic_p->getCurrentSize()) {
                 ic_p->setSelectedItemNumber(0);

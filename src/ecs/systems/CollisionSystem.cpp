@@ -62,7 +62,7 @@ void CollisionSystem::Collide(Entity* entity_1, Entity* entity_2) {
       if (entity_2->Contains<FoodTagComponent>()) {
         auto ic = entity_1->Get<InventoryComponent>();
         if ((ic->getCurrentSize() < ic->getMaxSize()) && !entity_2->Get<OnPlaceComponent>()->getStatus()) {
-          ic->addItem(ItemComponent(entity_2->GetId(), "Health's potion", "Very useful thing.")); // Smells like a american burger with extra cheese.
+          //ic->addItem(ItemComponent(entity_2->GetId(), "Health's potion", "Very useful thing.")); // Smells like a american burger with extra cheese.
           //std::cout << "INVENTORY SIZE: " << ic->getInventory().size() << "COMPONNT: " << entity_2->Get<TransformComponent>() << std::endl;
           entity_2->Delete<TransformComponent>();
         }
@@ -72,7 +72,7 @@ void CollisionSystem::Collide(Entity* entity_1, Entity* entity_2) {
       if (entity_2->Contains<WeaponTagComponent>()) {
         auto ic = entity_1->Get<InventoryComponent>();
         if ((ic->getCurrentSize() < ic->getMaxSize()) && !entity_2->Get<OnPlaceComponent>()->getStatus()) {
-          ic->addItem(ItemComponent(entity_2->GetId(), "Sword", "Just a sword.")); // Smells like a american burger with extra cheese.
+          //ic->addItem(ItemComponent(entity_2->GetId(), "Sword", "Just a sword.")); // Smells like a american burger with extra cheese.
           entity_2->Delete<TransformComponent>();
         }
       }
@@ -80,7 +80,7 @@ void CollisionSystem::Collide(Entity* entity_1, Entity* entity_2) {
       if (entity_2->Contains<ArmorTagComponent>()) {
         auto ic = entity_1->Get<InventoryComponent>();
         if ((ic->getCurrentSize() < ic->getMaxSize()) && !entity_2->Get<OnPlaceComponent>()->getStatus()) {
-          ic->addItem(ItemComponent(entity_2->GetId(), "Armor", "Just a armor.")); // Smells like a american burger with extra cheese.
+          //ic->addItem(ItemComponent(entity_2->GetId(), "Armor", "Just a armor.")); // Smells like a american burger with extra cheese.
           entity_2->Delete<TransformComponent>();
         }
       }

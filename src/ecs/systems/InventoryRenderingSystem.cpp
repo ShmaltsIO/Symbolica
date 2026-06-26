@@ -56,52 +56,52 @@ void InventoryRenderingSystem::OnUpdate() {
             // TODO: create max size
             int i = 22;
             int j = 6;
-            std::cout << "CUR SIZE: " << current_size << "CUR IT NUM: " << current_item_number << std::endl;
-            if (current_size > 0 && current_item_number != 0) {
-                auto item = ic_p->getInventory()[current_item_number-1];
-                auto item_entity = GetEntityManager().Get(item.getItemId());
-                auto ec_p = player.Get<EquipmentComponent>();
+            //std::cout << "CUR SIZE: " << current_size << "CUR IT NUM: " << current_item_number << std::endl;
+            //if (current_size > 0 && current_item_number != 0) {
+            //    auto item = ic_p->getInventory()[current_item_number-1];
+            //    auto item_entity = GetEntityManager().Get(item.getItemId());
+            //    auto ec_p = player.Get<EquipmentComponent>();
 
-                terminal_printf(i, j, "%d) %s", current_item_number, item.getName().c_str());    
-                        
-                // TODO: Include this sets in settings
-                terminal_set("0x1000: /home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/assets/tileFood.png, resize=56x56, resize-filter=nearest;");
-                terminal_set("0x1001: /home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/assets/tileBronzeSword.png, resize=56x56, resize-filter=nearest;");
-                terminal_set("0x1002: /home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/assets/tileDiamondSword.png, resize=56x56, resize-filter=nearest;");
-                terminal_set("0x1003: /home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/assets/tileIronArmor.png, resize=56x56, resize-filter=nearest;");
-                terminal_set("0x1004: /home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/assets/tileDiamondArmor.png, resize=56x56, resize-filter=nearest;");
-                
-                if (item_entity->Contains<FoodTagComponent>()) {
-                    terminal_put(i + 23, j + 1, 0x1000);
-                    terminal_printf(i, j + 10, "Description: %s ", item.getDescription().c_str());
-                    terminal_printf(i, j + 11, "Heal: %d ", GetEntityManager().Get(item.getItemId())->Get<WorthComponent>()->getWorth());
-                }
+            //    terminal_printf(i, j, "%d) %s", current_item_number, item.getName().c_str());    
+            //            
+            //    // TODO: Include this sets in settings
+            //    terminal_set("0x1000: /home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/assets/tileFood.png, resize=56x56, resize-filter=nearest;");
+            //    terminal_set("0x1001: /home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/assets/tileBronzeSword.png, resize=56x56, resize-filter=nearest;");
+            //    terminal_set("0x1002: /home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/assets/tileDiamondSword.png, resize=56x56, resize-filter=nearest;");
+            //    terminal_set("0x1003: /home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/assets/tileIronArmor.png, resize=56x56, resize-filter=nearest;");
+            //    terminal_set("0x1004: /home/lesnoy-elf/Документы/cProjects/shmalts.edgar-game/src/symbolica/assets/tileDiamondArmor.png, resize=56x56, resize-filter=nearest;");
+            //    
+            //    if (item_entity->Contains<FoodTagComponent>()) {
+            //        terminal_put(i + 23, j + 1, 0x1000);
+            //        terminal_printf(i, j + 10, "Description: %s ", item.getDescription().c_str());
+            //        terminal_printf(i, j + 11, "Heal: %d ", GetEntityManager().Get(item.getItemId())->Get<WorthComponent>()->getWorth());
+            //    }
 
-                if (item_entity->Contains<WeaponTagComponent>()) {
-                    terminal_put(i + 23, j + 1, 0x1001);
-                    terminal_printf(i, j + 10, "Description: %s ", item.getDescription().c_str());
-                    terminal_printf(i, j + 11, "Damage: %d ", GetEntityManager().Get(item.getItemId())->Get<DamageComponent>()->getDamage());
-                    
-                    if (ec_p->getRightHand() == item.getItemId()) {
-                        terminal_printf(i*2, j + 12, "[color=dark green]Equipped[/color]");
-                    }
-                }
+            //    if (item_entity->Contains<WeaponTagComponent>()) {
+            //        terminal_put(i + 23, j + 1, 0x1001);
+            //        terminal_printf(i, j + 10, "Description: %s ", item.getDescription().c_str());
+            //        terminal_printf(i, j + 11, "Damage: %d ", GetEntityManager().Get(item.getItemId())->Get<DamageComponent>()->getDamage());
+            //        
+            //        if (ec_p->getRightHand() == item.getItemId()) {
+            //            terminal_printf(i*2, j + 12, "[color=dark green]Equipped[/color]");
+            //        }
+            //    }
 
-                if (item_entity->Contains<ArmorTagComponent>()) {
-                    terminal_put(i + 23, j + 1, 0x1003);
-                    terminal_printf(i, j + 10, "Description: %s ", item.getDescription().c_str());
-                    terminal_printf(i, j + 11, "Protection: %d ", GetEntityManager().Get(item.getItemId())->Get<ProtectionComponent>()->getProtection());
-                    if (ec_p->getChest() == item.getItemId()) {
-                        terminal_printf(i*2, j + 12, "[color=dark green]Equipped[/color]");
-                    }
-                }
+            //    if (item_entity->Contains<ArmorTagComponent>()) {
+            //        terminal_put(i + 23, j + 1, 0x1003);
+            //        terminal_printf(i, j + 10, "Description: %s ", item.getDescription().c_str());
+            //        terminal_printf(i, j + 11, "Protection: %d ", GetEntityManager().Get(item.getItemId())->Get<ProtectionComponent>()->getProtection());
+            //        if (ec_p->getChest() == item.getItemId()) {
+            //            terminal_printf(i*2, j + 12, "[color=dark green]Equipped[/color]");
+            //        }
+            //    }
 
-            } else {
-                terminal_print(i, j + 10, "For moving in inventory");
-                terminal_print(i, j + 11, " press DOWN or UP keys.");
-                terminal_print(i, j + 12, "For use a item press R.");
-                terminal_print(i, j + 13, "For drop a item press Q.");
-            }
+            //} else {
+            //    terminal_print(i, j + 10, "For moving in inventory");
+            //    terminal_print(i, j + 11, " press DOWN or UP keys.");
+            //    terminal_print(i, j + 12, "For use a item press R.");
+            //    terminal_print(i, j + 13, "For drop a item press Q.");
+            //}
         }
         break;
     }

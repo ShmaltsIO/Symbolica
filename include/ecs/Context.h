@@ -3,6 +3,7 @@
 
 #include <string>
 #include <TilemapConfig.h>
+#include <unordered_map>
 
 #include "UISettings.h"
 #include "GameStatistics.h"
@@ -10,6 +11,7 @@
 #include "SceneType.h"
 #include "SpawnConfig.h"
 #include "DungeonGenerator.h"
+#include "ItemPrefab.h"
 
 /**
  * @brief Context have information about actual scene, which should be displayed now.
@@ -33,6 +35,8 @@ class Context {
   GameState* game_state = nullptr;
   SpawnConfig* spawnConfig = nullptr;
   DungeonGenerator* dungeon_generator = nullptr;
+
+  std::unordered_map<std::string, ItemPrefab> itemPrefabs;
 };
 
 #endif  // CONTEXT_H

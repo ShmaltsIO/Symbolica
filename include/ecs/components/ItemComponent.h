@@ -1,26 +1,23 @@
 #ifndef ITEM_COMPONENT_H
 #define ITEM_COMPONENT_H
 
-#include "IComponent.h"
 #include <string>
+
+#include "IComponent.h"
 
 class ItemComponent: public IComponent {
 private:
-    size_t item_id_ = 0;
-    std::string name_ = " ";
-    std::string description_ = " ";
+    std::string prefabId_ = "";
+    unsigned int count_ = 0;
 
 public:
-    ItemComponent();
-    ItemComponent(size_t, std::string, std::string);
+    ItemComponent() = default;
+    ItemComponent(const std::string& id, unsigned int count = 1): prefabId_(id), count_(count) {}
 
-    size_t getItemId();
-    std::string getName();
-    std::string getDescription();
-
-    size_t getItemId() const;
-    std::string getName() const;
-    std::string getDescription() const;
+    std::string getPrefabId() const;
+    unsigned int getCount() const;
+    void setCount(unsigned int);
+    void addCount(unsigned int);
 };
 
 #endif // ITEM_COMPONENT_H
