@@ -11,3 +11,15 @@ LevelState GameState::getLevelState() { return this->level_state; }
 void GameState::setLevelState(const LevelState& level_state) {
 	this->level_state = level_state;
 }
+
+const LevelState& GameState::getLevelState() const {
+	return level_state;
+}
+
+Map* GameState::getCurrentMap() const {
+	return current_map_.get();
+}
+
+void GameState::setCurrentMap(std::unique_ptr<Map> map) {
+	current_map_ = std::move(map);
+}

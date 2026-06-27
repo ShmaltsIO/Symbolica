@@ -177,6 +177,15 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/levels")
     )
 endif()
 
+if(EXISTS "${PROJECT_SOURCE_DIR}/saves")
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${PROJECT_SOURCE_DIR}/saves"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>/saves"
+        COMMENT "Copying saves to output directory"
+    )
+endif()
+
 # -----------------------------------------------------------------------------
 # 9. Линтинг (опционально)
 # -----------------------------------------------------------------------------

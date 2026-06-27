@@ -9,6 +9,9 @@
 #include "EntityType.h"
 #include "EntityColor.h"
 #include "EntityParams.h"
+#include "Map.h"
+#include "TileParams.h"
+#include "TileColor.h"
 
 #include "ColliderComponent.h"
 #include "PlayerControlComponent.h"
@@ -58,7 +61,7 @@ public:
 	EntityFabric() = delete;
 	EntityFabric(EntityManager* em) : em(em) {}
 
-	~EntityFabric() { delete em; em = nullptr; }
+	~EntityFabric() { em = nullptr; }
 
 	Entity* createPlayer();
 	Entity* createObserver();
@@ -73,6 +76,10 @@ public:
 	Entity* createWeaponFrom(const WeaponClassConfig& config, const int level_number);
 	Entity* createChestFrom(const ChestSpawnConfig& config, const int level_number);
 
+	Entity* createWall(const TileParams& params);
+	Entity* createGround(const TileParams& params);
+	Entity* createDoor(const TileParams& params);
+	void createMapTiles(const Map& map, int currentLevelId);
 };
 
 #endif // ENTITY_FABRIC_H

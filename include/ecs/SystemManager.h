@@ -40,6 +40,12 @@ class SystemManager {
     systems.at(typeid(System))->is_enabled_ = false;
   }
 
+  void DisableAll() const {
+      for (auto& pair : systems) {
+          pair.second.get()->is_enabled_ = false;
+      }
+  }
+
   template<typename System>
   void Enable() const {
     systems.at(typeid(System))->is_enabled_ = true;

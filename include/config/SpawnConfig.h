@@ -84,6 +84,12 @@ private:
     mutable std::vector<const WeaponClassConfig*> weaponClassesCache_;
 
 public:
+    SpawnConfig() = default;
+    ~SpawnConfig() {
+        enemiesCache_.clear(); itemsCache_.clear(); bossesCache_.clear();
+        armorClassesCache_.clear(); weaponClassesCache_.clear();
+    }
+
     EnemySpawnConfig enemies;
     ItemSpawnConfig items;
     RoomSpawnConfig rooms;

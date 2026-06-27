@@ -120,3 +120,5 @@ bool DungeonGenerator::isInsideMap(const Map& map, int x, int y) const {
 }
 
 const std::vector<BSPRoom>& DungeonGenerator::getRooms() const { return rooms_; }
+
+std::vector<BSPRoom>& DungeonGenerator::getRooms() { return rooms_; }

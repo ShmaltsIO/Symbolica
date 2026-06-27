@@ -21,6 +21,13 @@ private:
 
  public:
   explicit SceneManager(const Context& ctx);
+  SceneManager(SceneManager&&) = default;
+  SceneManager& operator=(SceneManager&&) = default;
+  SceneManager(const SceneManager&) = delete;
+  SceneManager& operator=(const SceneManager&) = delete;
+  ~SceneManager() {
+	  scenes_.clear();
+  }
 
   void OnRender();
   void OnExit() const;

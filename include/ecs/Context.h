@@ -2,16 +2,18 @@
 #define CONTEXT_H
 
 #include <string>
-#include <TilemapConfig.h>
 #include <unordered_map>
+#include <memory>
 
 #include "UISettings.h"
 #include "GameStatistics.h"
 #include "GameState.h"
 #include "SceneType.h"
 #include "SpawnConfig.h"
-#include "DungeonGenerator.h"
 #include "ItemPrefab.h"
+#include "LevelGenerator.h"
+#include "Engine.h"
+#include "TilemapConfig.h"
 
 /**
  * @brief Context have information about actual scene, which should be displayed now.
@@ -29,12 +31,14 @@ class Context {
  public:
   SceneType scene = SceneType::TitleScene;
 
-  UISettings* ui_settings = nullptr;
+  std::unique_ptr<Engine> engine;
+  std::unique_ptr<UISettings> ui_settings;
+  std::unique_ptr<GameState> game_state;
+  std::unique_ptr<GameStatistics> game_stats;
+
   TilemapConfig* tilemapConfig = nullptr; // или unique_ptr, но проще сырой указатель
-  GameStatistics* game_stats = nullptr;
-  GameState* game_state = nullptr;
   SpawnConfig* spawnConfig = nullptr;
-  DungeonGenerator* dungeon_generator = nullptr;
+  LevelGenerator* level_generator = nullptr;
 
   std::unordered_map<std::string, ItemPrefab> itemPrefabs;
 };

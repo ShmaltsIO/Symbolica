@@ -5,39 +5,37 @@
 #include "TransformComponent.h"
 #include "PathToTargetComponent.h"
 #include "aStar.h"
+#include "GameState.h"
 
-AIcontrolsSystem::AIcontrolsSystem(EntityManager* entity_manager, SystemManager* system_manager, Grid level_map):
- ISystem(entity_manager, system_manager), level_map_(level_map) {}
+AIcontrolsSystem::AIcontrolsSystem(EntityManager* entityManager, SystemManager* systemManager, Context* context)
+    : ISystem(entityManager, systemManager), context_(context) {
+}
 
 void AIcontrolsSystem::OnPreUpdate() {}
 
 void AIcontrolsSystem::OnUpdate() {
-    Vector2D player_pos{0, 0};
+    auto* map = context_->game_state->getCurrentMap();
+    if (!map) return;
+
+    Vector2D playerPos;
     for (auto& entity : GetEntityManager()) {
         if (entity.Contains<PlayerTagComponent>()) {
-            auto tc_p = entity.Get<TransformComponent>();
-            player_pos = tc_p->position_;
+            auto tc = entity.Get<TransformComponent>();
+            playerPos = tc->position_;
             break;
         }
     }
 
     for (auto& entity : GetEntityManager()) {
         if (entity.Contains<EnemyTagComponent>()) {
-            auto tc_e = entity.Get<TransformComponent>();
-            auto pttc_e = entity.Get<PathToTargetComponent>();
-            //std::vector<GameObjectsEnum> obstacles = {GameObjectsEnum::WALL, GameObjectsEnum::DOOR_TO, GameObjectsEnum::DOOR_FROM};
-            std::vector<Vector2D> path = aStar(Node(player_pos), Node(tc_e->position_), level_map_, {GameObjectsEnum::WALL, GameObjectsEnum::DOOR_TO, GameObjectsEnum::DOOR_FROM}, true);
+            auto tc = entity.Get<TransformComponent>();
+            auto pttc = entity.Get<PathToTargetComponent>();
+            std::vector<Vector2D> path = aStar(playerPos, tc->position_, *map);
             if (path.empty()) {
-                path.push_back(tc_e->position_);
-                path.push_back(tc_e->position_);
-                //std::cout << "STOIK " << tc_e->position_ << std::endl;
+                path.push_back(tc->position_);
+                path.push_back(tc->position_);
             }
-            // for (unsigned int i = 0; i < path.size(); i++) {
-            //     std::cout << "OPTIMUM: " << i << " " << path[i] << std::endl;
-
-            //     std::cout << "BEGIN: " << i << " " << *(path.end() - 2) << std::endl;
-            // }
-            pttc_e->setPathToTarget(path);
+            pttc->setPathToTarget(path);
         }
     }
 }

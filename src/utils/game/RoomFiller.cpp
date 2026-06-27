@@ -1,17 +1,37 @@
 #include "RoomFiller.h"
 
+EntityFabric* RoomFiller::getEntityFabric() {
+    return entity_fabric;
+}
+
+SpawnConfig* RoomFiller::getSpawnConfig() {
+    return spawn_config_;
+}
+
 int RoomFiller::calculateHealth(int level_number) {
+    if (level_number <= 0) {
+        return spawn_config_->enemies.base_health;
+    }
+
     return (spawn_config_->enemies.base_health + level_number*(level_number-1)/2);
 }
 
 int RoomFiller::calculateDamage(int level_number) {
     int n = spawn_config_->enemies.base_damage;
 
-    return static_cast<int>(std::round((std::log(n*std::pow(level_number, n)))));
+    if (n <= 0) n = 1;
+
+    double f = (std::log(n * std::pow(level_number + 1, n)));
+
+    int res = static_cast<int>(std::round(f));
+
+    if (res < 1) res = 1;
+
+    return res;
 }
 
 int RoomFiller::calculateProtection(int level_number) {
-    float f = std::round((std::log(level_number)));
+    float f = std::round((std::log(level_number+1)));
     return static_cast<int>(f);
 }
 
@@ -19,15 +39,17 @@ int RoomFiller::calculateExperienceReward(int level_number) {
     int b = spawn_config_->enemies.base_health;
     int dm = calculateDamage(level_number);
 
-    std::uniform_real_distribution<double> dist(1, dm);
+    if (dm <= 1) dm = 2;
 
-    float f = std::round(b*(std::log(b*std::pow(level_number, dist(rng_)))));
+    std::uniform_real_distribution<double> dist(1.0, static_cast<double>(dm));
+
+    float f = std::round(b*(std::log(b*std::pow(level_number+1, dist(rng_)))));
 
     return static_cast<int>(f);
 }
 
 int RoomFiller::calculateWorth(int level_number) {
-    float f = std::round(std::sqrt(calculateDamage(level_number)));
+    float f = std::round(std::sqrt(calculateDamage(level_number+1)));
 
     return static_cast<int>(f);
 }
@@ -62,120 +84,97 @@ unsigned int RoomFiller::calculateQuotaItems(int level_number) {
 
 void RoomFiller::fill(std::vector<BSPRoom>& rooms, const Map& map, int level_number) {
     auto& available_enemies = spawn_config_->getEnemies(level_number);
-    std::uniform_int_distribution<size_t> dist(0, available_enemies.size() - 1);
 
-    std::vector<EntityType> items = {EntityType::COIN, EntityType::FOOD};
-    std::vector<size_t> chances = {50, 50};
+    // 1. Проверка, что есть доступные враги
+    if (available_enemies.empty()) {
+        // Логируем или просто пропускаем врагов
+        std::cerr << "Warning: no available enemies for depth " << level_number << std::endl;
+        // Можно продолжить без врагов
+    }
+
+    // 2. Распределение для предметов
+    std::vector<EntityType> items = { EntityType::COIN, EntityType::FOOD };
+    std::vector<size_t> chances = { 50, 50 };
     auto items_dist = std::discrete_distribution<size_t>(chances.begin(), chances.end());
 
-    std::vector<Vector2D> freeCells{};
-
+    // 3. Проходим по комнатам
     for (BSPRoom& room : rooms) {
+        // Выбираем тип комнаты
         RoomTypeConfig chosen = spawn_config_->rooms.roomTypes[dist_(rng_)];
-        std::uniform_int_distribution<size_t> d(0, chosen.enemy_species.size() - 1);
+        room.type = chosen.id;
+        room.difficult = 1; // TODO
 
-        if (freeCells.empty()) {
-            for (int dx = room.x + 1; dx < room.x + room.w - 1; ++dx) {
-                for (int dy = room.y + 1; dy < room.y + room.h - 1; ++dy) {
-                    if (map.isWalkable(dx, dy)) {
-                        freeCells.push_back({ dx, dy });
-                    }
+        // 4. Собираем свободные клетки для ЭТОЙ комнаты
+        std::vector<Vector2D> freeCells;
+        for (int dx = room.x + 1; dx < room.x + room.w - 1; ++dx) {
+            for (int dy = room.y + 1; dy < room.y + room.h - 1; ++dy) {
+                if (map.isWalkable(dx, dy)) {
+                    freeCells.push_back({ dx, dy });
                 }
             }
         }
-
         if (freeCells.empty()) continue;
 
-        std::uniform_int_distribution<size_t> posDist(0, freeCells.size() - 1);
-        
-        Vector2D pos = freeCells[posDist(rng_)];
+        // 5. Перемешиваем клетки
+        std::shuffle(freeCells.begin(), freeCells.end(), rng_);
 
-        // Удаляем занятую клетку из списка, чтобы не ставить туда повторно
-        freeCells.erase(freeCells.begin() + posDist(rng_));
-
-        room.type = chosen.id;
-        room.difficult = 1; // TODO: difficult
-
-        // 1. Fill room by enemies
+        // 6. Расставляем врагов
         unsigned int enemy_quota = calculateQuotaEnemies(level_number);
+        if (enemy_quota > freeCells.size()) {
+            enemy_quota = freeCells.size(); // или половину, как хочешь
+        }
 
-        if (enemy_quota >= freeCells.size()) {
-            if (freeCells.size() % 2 == 1) {
-                enemy_quota = freeCells.size() - 1;
+        if (!available_enemies.empty() && !chosen.enemy_species.empty()) {
+            std::uniform_int_distribution<size_t> enemyTypeDist(0, available_enemies.size() - 1);
+            std::uniform_int_distribution<size_t> speciesDist(0, chosen.enemy_species.size() - 1);
+
+            for (unsigned int i = 0; i < enemy_quota; ++i) {
+                const EnemyTypeConfig* enemy_type = available_enemies[enemyTypeDist(rng_)];
+                std::string enemy_spec = chosen.enemy_species[speciesDist(rng_)];
+
+                Vector2D pos = freeCells[i];
+
+                EntityParams params;
+                params.entity_type = EntityType::ENEMY;
+                params.damage = calculateDamage(level_number);
+                params.health = calculateHealth(level_number);
+                params.protection = calculateProtection(level_number);
+                params.worth = calculateWorth(level_number);
+                params.experienceReward = calculateExperienceReward(level_number);
+                params.name = enemy_type->id;
+                params.title = enemy_spec;
+                params.position = pos;
+
+                entity_fabric->createEntityFrom(*spawn_config_, level_number, params);
             }
-            enemy_quota = freeCells.size()/2;
         }
 
-        for (unsigned int i = 0; i < enemy_quota; i++) {
-            const EnemyTypeConfig* enemy_type = available_enemies[dist(rng_)];
-            std::string enemy_spec = chosen.enemy_species[d(rng_)];
-
-            EntityParams params;
-            params.entity_type = EntityType::ENEMY;
-            params.damage = calculateDamage(level_number);
-            params.health = calculateHealth(level_number);
-            params.protection = calculateProtection(level_number);
-            params.worth = calculateWorth(level_number);
-            params.experienceReward = calculateExperienceReward(level_number);
-            params.name = enemy_type->id;
-            params.title = enemy_spec;
-            params.position = pos;
-
-            auto entity = entity_fabric->createEntityFrom(*spawn_config_, level_number, params);
-        }
-
-        // 2. Fill room by items
+        // 7. Расставляем предметы (используем оставшиеся клетки)
         unsigned int items_quota = calculateQuotaItems(level_number);
-
-        if (items_quota >= freeCells.size()) {
-            if (freeCells.size() % 2 == 1) {
-                items_quota = freeCells.size() - 1;
-            }
-            items_quota = freeCells.size() / 2;
+        size_t startIndex = enemy_quota; // после врагов
+        if (items_quota > freeCells.size() - startIndex) {
+            items_quota = freeCells.size() - startIndex;
         }
 
-        for (unsigned int i = 0; i < items_quota; i++) {
+        for (unsigned int i = 0; i < items_quota; ++i) {
             EntityType item_type = items[items_dist(rng_)];
+            Vector2D pos = freeCells[startIndex + i];
 
             EntityParams params;
             params.entity_type = item_type;
+            params.position = pos;
+            params.name = "TEST";
 
-            int a = 0;
-            int b = 1;
-
-            switch (item_type)
-            {
-            case EntityType::COIN:
-                a = 1;
-                b = 5;
-                break;
-            case EntityType::FOOD:
-                a = 10;
-                b = 15;
-                break;
-            case EntityType::ARMOR:
-                //
-                break;
-            case EntityType::WEAPON:
-                //
-                break;
-            case EntityType::KEY:
-                //
-                break;
-            default:
-                //
-                break;
+            int a = 0, b = 1;
+            switch (item_type) {
+            case EntityType::COIN: a = 1; b = 5; break;
+            case EntityType::FOOD: a = 10; b = 15; break;
+            default: break;
             }
-
             std::uniform_int_distribution<int> dist_i(a, b);
             params.worth = dist_i(rng_);
 
-            params.name = "TEST";
-            params.position = pos;
-
-            auto entity = entity_fabric->createEntityFrom(*spawn_config_, level_number, params);
+            entity_fabric->createEntityFrom(*spawn_config_, level_number, params);
         }
-
-        freeCells.clear();
-	}
+    }
 }

@@ -45,9 +45,6 @@
         "weight": 10
       }
     ],
-    //"titles": [ for hero name, later
-    //  "common", "epic", "diamond"
-    //],
     "items": {
       "base_count": 5,
       "per_depth": 3,

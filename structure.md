@@ -119,10 +119,8 @@ symbolica/
 |  |  |  |- Filter.h
 |  |  |
 |  |  |- game/  # Игровые утилиты
-|  |  |  |- LevelGenerator.h
 |  |  |  |- LevelReader.h
 |  |  |  |- LevelWriter.h
-|  |  |  |- RoomGenerator.h
 |  |  |
 |  |  |- math/  # Математические формулы и алгоритмы
 |  |  |  |- aStar.h

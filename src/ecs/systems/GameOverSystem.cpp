@@ -14,11 +14,17 @@ GameOverSystem::GameOverSystem(EntityManager* const entity_manager, SystemManage
 void GameOverSystem::OnUpdate() {
   for (auto& entity : GetEntityManager()) {
     if (entity.Contains<PlayerTagComponent>()) {
-      auto observer = GetEntityManager().Get(3);
-      if (entity.Get<HealthComponent>()->getHealth() <= 0 
-        || entity.Get<StepComponent>()->getSteps() >= observer->Get<StepLimitComponent>()->getStepLimit()) {
-        ctx_->scene = SceneType::GameOverScene;
-      }
+        for (auto& observer : GetEntityManager()) {
+            if (observer.Contains<ObserverTagComponent>()) {
+                if (entity.Get<HealthComponent>()->getHealth() <= 0
+                    || entity.Get<StepComponent>()->getSteps() >= observer.Get<StepLimitComponent>()->getStepLimit()) {
+                    ctx_->scene = SceneType::GameOverScene;
+                }
+                break;
+            }
+            
+        }
+        break;
     }
   }
 }

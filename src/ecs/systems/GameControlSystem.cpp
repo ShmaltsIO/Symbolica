@@ -11,7 +11,6 @@
 #include "BattleSystem.h"
 #include "AIcontrolsSystem.h"
 #include "RadiusUpdateSystem.h"
-#include "LevelMapUpdateSystem.h"
 #include "RoomsSwitchSystem.h"
 #include "InventoryRenderingSystem.h"
 #include "RenderingSystem.h"
@@ -29,7 +28,6 @@ void GameControlSystem::stop_game() {
     sm->Disable<MovementSystem>();
     sm->Disable<AIcontrolsSystem>();
     sm->Disable<BattleSystem>();
-    sm->Disable<LevelMapUpdateSystem>();
     sm->Disable<RoomsSwitchSystem>();
     // sm->Disable<RadiusUpdateSystem>();
     // sm->Disable<ObstaclesControlSystem>();
@@ -44,7 +42,6 @@ void GameControlSystem::continue_game() {
     sm->Enable<MovementSystem>();
     sm->Enable<AIcontrolsSystem>();
     sm->Enable<BattleSystem>();
-    sm->Enable<LevelMapUpdateSystem>();
     sm->Enable<RoomsSwitchSystem>();
     // sm->Enable<ObstaclesControlSystem>();
     sm->Enable<PlayerControlSystem>();

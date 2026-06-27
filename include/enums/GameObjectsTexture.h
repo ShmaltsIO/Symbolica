@@ -11,7 +11,9 @@ enum class GameObjectsTexture : char {
     NPC = 'N',
     ARMOR = 'A',
     WEAPON = 'W',
-    BOSS = 'B'
+    BOSS = 'B',
+    WALL = '#',
+    GROUND = '.'
 };
 
 #endif // GAME_OBJECTS_TYPE_H

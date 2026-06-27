@@ -23,6 +23,7 @@ class Engine {
 
  public:
   Engine();
+  ~Engine() = default;
 
   EntityManager* GetEntityManager() const;
   SystemManager* GetSystemManager() const;

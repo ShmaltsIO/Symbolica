@@ -30,8 +30,13 @@ private:
 
 public:
     DungeonGenerator(unsigned int seed = std::random_device{}());
+    DungeonGenerator(unsigned int seed, int min_room_size, int max_room_size, int min_leaf_size): rng_(seed), minRoomSize_(min_leaf_size), maxRoomSize_(max_room_size), minLeafSize_(min_leaf_size) {}
+    
+    ~DungeonGenerator() { rooms_.clear(); minLeafSize_ = 0; minRoomSize_ = 0; maxRoomSize_ = 0; }
+    
     Map generate(int width, int height);
     const std::vector<BSPRoom>& getRooms() const;
+    std::vector<BSPRoom>& getRooms();
 };
 
 #endif

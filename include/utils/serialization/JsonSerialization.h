@@ -6,6 +6,21 @@
 #include "ItemStats.h"
 #include "ItemData.h"
 #include "PlayerSaveData.h"
+#include "SpawnConfig.h"
+
+// ---- SpawnConfig ----
+void from_json(const nlohmann::json& j, EnemyTypeConfig& cfg);
+void from_json(const nlohmann::json& j, EnemySpawnConfig& cfg);
+void from_json(const nlohmann::json& j, ItemTypeConfig& cfg);
+void from_json(const nlohmann::json& j, ItemSpawnConfig& cfg);
+void from_json(const nlohmann::json& j, RoomTypeConfig& cfg);
+void from_json(const nlohmann::json& j, RoomSpawnConfig& cfg);
+void from_json(const nlohmann::json& j, ArmorClassConfig& cfg);
+void from_json(const nlohmann::json& j, WeaponClassConfig& cfg);
+void from_json(const nlohmann::json& j, BossTypeConfig& cfg);
+void from_json(const nlohmann::json& j, BossSpawnConfig& cfg);
+void from_json(const nlohmann::json& j, ChestSpawnConfig& cfg);
+void from_json(const nlohmann::json& j, SpawnConfig& cfg);
 
 // ---- Vector2D ----
 namespace nlohmann {

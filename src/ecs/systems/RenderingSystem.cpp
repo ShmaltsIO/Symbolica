@@ -108,19 +108,21 @@ void RenderingSystem::OnUpdate() {
       auto hc = entity.Get<HealthComponent>();
       auto sc = entity.Get<StepComponent>();
       // Observer...
-      auto observer = GetEntityManager().Get(3);
-      auto lsc = observer->Get<StepLimitComponent>();
-
-      terminal_printf(0, 0, "Money: %d", wc->getWorth());
-      terminal_printf(15, 0, "Healht: %d", hc->getHealth());
-      if (sc->getSteps() >= lsc->getStepLimit() / 2) {
-        terminal_printf(30, 0, "Steps: [color=red]%d[/color]/%d", sc->getSteps(), lsc->getStepLimit());
-      } else {
-        terminal_printf(30, 0, "Steps: %d/%d", sc->getSteps(), lsc->getStepLimit());
+      for (auto& observer : GetEntityManager()) {
+          if (observer.Contains<ObserverTagComponent>()) {
+              auto lsc = observer.Get<StepLimitComponent>();
+              terminal_printf(0, 0, "Money: %d", wc->getWorth());
+              terminal_printf(15, 0, "Healht: %d", hc->getHealth());
+              if (sc->getSteps() >= lsc->getStepLimit() / 2) {
+                  terminal_printf(30, 0, "Steps: [color=red]%d[/color]/%d", sc->getSteps(), lsc->getStepLimit());
+              }
+              else {
+                  terminal_printf(30, 0, "Steps: %d/%d", sc->getSteps(), lsc->getStepLimit());
+              } 
+              break;
+          }
       }
-      
-      
-      break; // if del the next if
+      break;
     }
     // if (entity.Contains<DoorTagComponent>()) {
     //   auto wc = entity.Get<WorthComponent>();

@@ -31,7 +31,7 @@ void MovementSystem::OnUpdate() {
       // TODO: operator != not working correcctly, it always 0 - false
       if (!(movement_component->direction_ == zeroVector)) {
         player_is_moved_ = true;
-        std::cout << "MOVe SYS" << std::endl;
+
         for (auto& item : GetEntityManager()) {
           if (item.Contains<ItemTagComponent>()) {
             if (item.Get<OnPlaceComponent>()->getStatus()) {
@@ -39,7 +39,16 @@ void MovementSystem::OnUpdate() {
             }
           }
         }
-        auto step_limit_c = GetEntityManager().Get(3)->Get<StepLimitComponent>();
+
+        StepLimitComponent* step_limit_c = nullptr;
+
+        for (auto& observer : GetEntityManager()) {
+            if (observer.Contains<StepLimitComponent>()) {
+                step_limit_c = observer.Get<StepLimitComponent>();
+                break;
+            }
+        }
+
         if (entity.Get<StepComponent>()->getSteps() >= step_limit_c->getStepLimit() / 2) {
           auto hc_p = entity.Get<HealthComponent>();
           hc_p->setHealth(hc_p->getHealth() - 1);

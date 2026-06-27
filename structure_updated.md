@@ -230,11 +230,9 @@ Symbolica/
 │       ├── game/
 │       │   ├── BSPNode.h
 │       │   ├── DungeonGenerator.h
-│       │   ├── LevelGenerator.h
 │       │   ├── LevelReaderTxt.h
 │       │   ├── LevelWriterTxt.h
 │       │   ├── RoomFiller.h
-│       │   ├── RoomGenerator.h
 │       │   └── SaveConverter.h
 │       └── math/
 │           ├── aStar.h

@@ -6,7 +6,7 @@ enum class TileType : char {
     WALL = '1',
     DOOR_NEXT = 'D',
     DOOR_PREV = 'U',
-    DOOR_CLAOSED = 'C',
+    DOOR_CLOSED = 'C',
     DOOR_OPEN = 'O'
 };
 

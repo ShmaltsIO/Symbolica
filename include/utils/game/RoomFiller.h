@@ -37,6 +37,8 @@ public:
 
 	~RoomFiller() = default;
 
+	EntityFabric* getEntityFabric();
+	SpawnConfig* getSpawnConfig();
 
 	void fill(std::vector<BSPRoom>& rooms, const Map& map, int level_number);
 };

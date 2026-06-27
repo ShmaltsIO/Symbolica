@@ -1,4 +1,4 @@
-#ifndef MOMEY_TAG_COMPONENT_H
+#ifndef MONEY_TAG_COMPONENT_H
 #define MONEY_TAG_COMPONENT_H
 
 #include "AbstractTag.h"
