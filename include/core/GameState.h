@@ -5,12 +5,15 @@
 
 #include "LevelState.h"
 #include "Map.h"
+#include "Entity.h"
 
 class GameState {
 private:
 	unsigned int room_number = 1;
 	LevelState level_state;
 	std::unique_ptr<Map> current_map_;
+	Entity* player = nullptr;
+	Entity* observer = nullptr;
 
 public:
 	GameState() = default;
@@ -27,6 +30,13 @@ public:
 
 	Map* getCurrentMap() const;
 	void setCurrentMap(std::unique_ptr<Map> map);
+
+	Entity* getPlayer();
+	Entity* getPlayer() const;
+	void setPlayer(Entity* player);
+
+	Entity* getObserver();
+	void setObserver(Entity* observer);
 };
 
 #endif // GAME_STATE_H

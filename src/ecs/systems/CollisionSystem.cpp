@@ -171,47 +171,141 @@ void CollisionSystem::Collide(Entity* entity_1, Entity* entity_2) {
   //GetSystemManager().Enable<MovementSystem>();
 }
 
-CollisionSystem::CollisionSystem(EntityManager* const entity_manager, SystemManager* const system_manager):
- ISystem(entity_manager, system_manager) {}
-
-void CollisionSystem::OnPreUpdate() {}
-
-void CollisionSystem::OnUpdate() {
-  // TODO: Can create list with priotitets, and then we will know, where consides a player, but it was tree
-  auto player = GetEntityManager().Get(2);
-  
-  auto tcp = player->Get<TransformComponent>();
-  
-  for (auto& entity : GetEntityManager()) {
-    if (entity.Contains<TransformComponent>()) {
-      auto tc = entity.Get<TransformComponent>();
-      if ((tcp->position_ == tc->position_ && tcp->position_ == tc->position_)) {
-        Collide(player, &entity);
-      }
-    }
-  }
-
-  // For enemies collision
-  for (auto& enemy : GetEntityManager()) {
-    if (enemy.Contains<EnemyTagComponent>()) {
-      auto tc_e = enemy.Get<TransformComponent>();
-      for (auto& enemy_other : GetEntityManager()) {
-        if (enemy_other.Contains<TransformComponent>()) {
-          auto tc_eo = enemy_other.Get<TransformComponent>();
-          if (tc_e->position_ == tc_eo->position_) {
-            Collide(&enemy, &enemy_other);
-          }
-        }
-
-      }
-    }
-  }
-
-  for (auto& entity : GetEntityManager()) {
-    if (entity.Contains<ColliderComponent>()) {
-      entity.Get<ColliderComponent>()->Clear();
-    }
-  }
+void CollisionSystem::OnPreUpdate() {
+    // очистка коллизий (если используется)
 }
 
-void CollisionSystem::OnPostUpdate() {}
+void CollisionSystem::OnUpdate() {
+    if (!game_state_.getPlayer()) return;
+
+    Entity* player = game_state_.getPlayer();
+    Vector2D playerPos = player->Get<TransformComponent>()->position_;
+    std::vector<Entity*> toDelete;
+
+    // 1. Коллизия игрока со всеми сущностями (можно оптимизировать, проверяя только потенциальные)
+    for (auto& entity : GetEntityManager()) {
+        if (entity.GetId() == player->GetId()) continue;
+        if (!entity.Contains<TransformComponent>()) continue;
+        if (entity.Get<TransformComponent>()->position_ == playerPos) {
+            handlePlayerCollision(player, &entity, toDelete);
+        }
+    }
+
+    // Удаляем собранные сущности
+    for (Entity* e : toDelete) {
+        GetEntityManager().DeleteEntity(e->GetId());
+    }
+    toDelete.clear();
+
+    // 2. Коллизии врагов друг с другом (если нужны)
+    for (auto& enemy1 : GetEntityManager()) {
+        if (!enemy1.Contains<EnemyTagComponent>()) continue;
+        if (!enemy1.Contains<TransformComponent>()) continue;
+
+        Vector2D pos1 = enemy1.Get<TransformComponent>()->position_;
+
+        for (auto& enemy2 : GetEntityManager()) {
+            if (!enemy2.Contains<EnemyTagComponent>()) continue;
+            if (!enemy2.Contains<TransformComponent>()) continue;
+            if (enemy1.GetId() == enemy2.GetId()) continue;
+
+            if (enemy2.Get<TransformComponent>()->position_ == pos1) {
+                handleEnemyCollision(&enemy1, &enemy2);
+            }
+        }
+    }
+
+    // Очистка коллизий (если используется ColliderComponent)
+    for (auto& entity : GetEntityManager()) {
+        if (entity.Contains<ColliderComponent>()) {
+            entity.Get<ColliderComponent>()->Clear();
+        }
+    }
+}
+
+void CollisionSystem::handlePlayerCollision(Entity* player, Entity* other, std::vector<Entity*>& toDelete) {
+    // --- Монеты ---
+    if (other->Contains<MoneyTagComponent>()) {
+        auto* wc_p = player->Get<WorthComponent>();
+        auto* wc_o = other->Get<WorthComponent>();
+        wc_p->setWorth(wc_p->getWorth() + wc_o->getWorth());
+        toDelete.push_back(other);
+        return;
+    }
+
+    // --- Предметы (еда, оружие, броня) ---
+    if (other->Contains<ItemTagComponent>()) {
+        auto* ic = player->Get<InventoryComponent>();
+        if (ic->getCurrentSize() < ic->getMaxSize()) {
+            // В зависимости от типа предмета добавляем в инвентарь
+            // Пока упрощённо: просто удаляем предмет
+            toDelete.push_back(other);
+        }
+        return;
+    }
+
+    // --- Стены ---
+    if (other->Contains<ObstacleTagComponent>()) {
+        auto* tc_p = player->Get<TransformComponent>();
+        auto* cm_p = player->Get<ColliderComponent>();
+        auto* sc_p = player->Get<StepComponent>();
+        tc_p->position_ -= cm_p->offset_;  // откат
+        sc_p->setSteps(sc_p->getSteps() - 1);
+        return;
+    }
+
+    // --- Двери ---
+    if (other->Contains<DoorTagComponent>()) {
+        auto* oc = other->Get<OpenableComponent>();
+        if (!oc->getStatus()) {
+            // дверь закрыта — открываем или переключаем уровень
+            auto* lc = other->Get<LevelComponent>();
+            if (lc->getLevel() >= 8) {
+                GetSystemManager().Enable<GameWinSystem>();
+            }
+            else {
+                GetSystemManager().Enable<RoomsSwitchSystem>();
+            }
+        }
+        else {
+            // дверь открыта — проход, но если она открыта, можно пройти, но логика может быть другой
+            // Пока сделаем откат (как стена)
+            auto* tc_p = player->Get<TransformComponent>();
+            auto* cm_p = player->Get<ColliderComponent>();
+            auto* sc_p = player->Get<StepComponent>();
+            tc_p->position_ -= cm_p->offset_;
+            sc_p->setSteps(sc_p->getSteps() - 1);
+        }
+        return;
+    }
+
+    // --- Враги (бой) ---
+    if (other->Contains<EnemyTagComponent>()) {
+        auto* hc_p = player->Get<HealthComponent>();
+        auto* dc_p = player->Get<DamageComponent>();
+        auto* hc_e = other->Get<HealthComponent>();
+        auto* dc_e = other->Get<DamageComponent>();
+        auto* sc_p = player->Get<StepComponent>();
+        sc_p->setSteps(sc_p->getSteps() - 1);
+
+        while (hc_p->getHealth() > 0 && hc_e->getHealth() > 0) {
+            hc_p->setHealth(hc_p->getHealth() - dc_e->getDamage());
+            hc_e->setHealth(hc_e->getHealth() - dc_p->getDamage());
+        }
+        if (hc_e->getHealth() <= 0) {
+            toDelete.push_back(other);
+        }
+        return;
+    }
+}
+
+void CollisionSystem::handleEnemyCollision(Entity* enemy1, Entity* enemy2) {
+    // Просто отталкиваем первого врага (можно добавить логику)
+    auto* cm_e = enemy1->Get<ColliderComponent>();
+    auto* tc_e = enemy1->Get<TransformComponent>();
+    tc_e->position_ = cm_e->offset_;
+}
+
+void CollisionSystem::OnPostUpdate() {
+
+}

@@ -23,3 +23,23 @@ Map* GameState::getCurrentMap() const {
 void GameState::setCurrentMap(std::unique_ptr<Map> map) {
 	current_map_ = std::move(map);
 }
+
+Entity* GameState::getPlayer() {
+	return player;
+}
+
+Entity* GameState::getPlayer() const {
+	return player;
+}
+
+void GameState::setPlayer(Entity* player) {
+	this->player = player;
+}
+
+Entity* GameState::getObserver() {
+	return observer;
+}
+
+void GameState::setObserver(Entity* observer) {
+	this->observer = observer;
+}

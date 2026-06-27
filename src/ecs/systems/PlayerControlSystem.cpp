@@ -1,62 +1,29 @@
 #include "PlayerControlSystem.h"
-#include "EntityManager.h"
-#include "MovementComponent.h"
-#include "Vector2D.h"
-#include "PlayerControlComponent.h"
-#include "PlayerTagComponent.h"
-#include "StepComponent.h"
-
-PlayerControlSystem::PlayerControlSystem(EntityManager* entity_manager, SystemManager* system_manager, const Controls& controller):
-    ISystem(entity_manager, system_manager), controls_(controller) {}
-
 void PlayerControlSystem::OnPreUpdate() {}
 
 void PlayerControlSystem::OnUpdate() {
-    if (controls_.IsPressed(TK_UP) || controls_.IsPressed(TK_W)) {
-        for (auto& e : GetEntityManager()) {
-            if (e.Contains<PlayerTagComponent>()) {
-                auto mc = e.Get<MovementComponent>();
-                mc->direction_ = upVector;
+    auto player = game_state_.getPlayer();
+    auto* mc = player->Get<MovementComponent>();
+    auto* sc = player->Get<StepComponent>();
 
-                auto sc = e.Get<StepComponent>();
-                sc->setSteps(sc->getSteps() + 1);
-            }
-        }
+    if (controls_.IsPressed(TK_UP) || controls_.IsPressed(TK_W)) {
+        mc->direction_ = upVector;
+        sc->setSteps(sc->getSteps() + 1);
     }
 
     if (controls_.IsPressed(TK_RIGHT) || controls_.IsPressed(TK_D)) {
-        for (auto& e : GetEntityManager()) {
-            if (e.Contains<PlayerTagComponent>()) {
-                auto mc = e.Get<MovementComponent>();
-                mc->direction_ = rightVector;
-
-                auto sc = e.Get<StepComponent>();
-                sc->setSteps(sc->getSteps() + 1);
-            }
-        }
+        mc->direction_ = rightVector;
+        sc->setSteps(sc->getSteps() + 1);
     }
 
     if (controls_.IsPressed(TK_DOWN) || controls_.IsPressed(TK_S)) {
-        for (auto& e : GetEntityManager()) {
-            if (e.Contains<PlayerTagComponent>()) {
-                auto mc = e.Get<MovementComponent>();
-                mc->direction_ = downVector;
-
-                auto sc = e.Get<StepComponent>();
-                sc->setSteps(sc->getSteps() + 1);
-            }
-        }
+        mc->direction_ = downVector;
+        sc->setSteps(sc->getSteps() + 1);
     }
-    if (controls_.IsPressed(TK_LEFT) || controls_.IsPressed(TK_A)) {
-        for (auto& e : GetEntityManager()) {
-            if (e.Contains<PlayerTagComponent>()) {
-                auto mc = e.Get<MovementComponent>();
-                mc->direction_ = leftVector;
 
-                auto sc = e.Get<StepComponent>();
-                sc->setSteps(sc->getSteps() + 1);
-            }
-        }
+    if (controls_.IsPressed(TK_LEFT) || controls_.IsPressed(TK_A)) {
+        mc->direction_ = leftVector;
+        sc->setSteps(sc->getSteps() + 1);
     }
 }
 

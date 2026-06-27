@@ -74,10 +74,10 @@ void GameScene::OnCreate() {
     // Добавляем системы один раз (при создании сцены)
     auto sys = context_->engine->GetSystemManager();
 
-    sys->AddSystem<RenderingSystem>();
-    sys->AddSystem<PlayerControlSystem>(controls_);
-    sys->AddSystem<MovementSystem>();
-    sys->AddSystem<CollisionSystem>();
+    sys->AddSystem<RenderingSystem>(context_->game_state.get());
+    sys->AddSystem<PlayerControlSystem>(controls_, *context_->game_state.get());
+    sys->AddSystem<MovementSystem>(*context_->game_state.get());
+    sys->AddSystem<CollisionSystem>(*context_->game_state.get());
     sys->AddSystem<LevelSystem>();
     sys->AddSystem<GameOverSystem>(context_);
     sys->AddSystem<GameControlSystem>(controls_);
@@ -88,6 +88,8 @@ void GameScene::OnCreate() {
     sys->AddSystem<BattleSystem>();
     sys->AddSystem<InventoryRenderingSystem>();
     sys->AddSystem<InventoryControlSystem>(controls_);
+
+    sys->EnableAll();
 
     sys->Disable<GameWinSystem>();
     sys->Disable<InventoryRenderingSystem>();
@@ -149,8 +151,7 @@ void GameScene::loadLevel(int levelNumber) {
     Entity* player = fabric.createPlayer();
     // Устанавливаем начальную позицию (например, в центре первой комнаты)
     // Пока ставим в (5,5) – позже нужно будет получить из карты
-    player->Get<TransformComponent>()->position_ = Vector2D(5, 5);
-    // Добавляем тег игрока (уже есть в createPlayer)
+    player->Get<TransformComponent>()->position_ = Vector2D(10, 5);
 
     // Если есть сохранённые данные – восстанавливаем их (кроме позиции)
     if (oldPlayer) {
@@ -174,6 +175,9 @@ void GameScene::loadLevel(int levelNumber) {
     observer->Add<TransformComponent>(Vector2D(0, 0));
     observer->Add<StepLimitComponent>(100);
 
+    context_->game_state.get()->setObserver(observer);
+    context_->game_state.get()->setPlayer(player);
+
     levelLoaded_ = true;
     currentLevelId_ = levelNumber;
 }
@@ -189,7 +193,7 @@ void GameScene::clearLevel() {
 void GameScene::OnRender() {
     // Обновляем движок
     context_->engine->OnUpdate();
-
+    
     // Проверяем, не изменился ли номер уровня (например, через RoomsSwitchSystem)
     int newLevelId = context_->game_state->getRoomNumber();
     if (newLevelId != currentLevelId_) {

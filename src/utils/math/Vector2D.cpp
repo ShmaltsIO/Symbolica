@@ -27,7 +27,7 @@ bool Vector2D::operator== (const Vector2D& another_vector) {
 }
 
 bool Vector2D::operator!= (const Vector2D& another_vector) {
-    return (this->getX() != another_vector.getX() && this->getY() != another_vector.getY());
+    return (this->getX() != another_vector.getX() || this->getY() != another_vector.getY());
 }
 
 bool Vector2D::operator> (const Vector2D& another_vector) {
@@ -51,7 +51,7 @@ bool Vector2D::operator== (const Vector2D& another_vector) const {
 }
 
 bool Vector2D::operator!= (const Vector2D& another_vector) const {
-    return (this->getX() != another_vector.getX() && this->getY() != another_vector.getY());
+    return (this->getX() != another_vector.getX() || this->getY() != another_vector.getY());
 }
 
 bool Vector2D::operator> (const Vector2D& another_vector) const {

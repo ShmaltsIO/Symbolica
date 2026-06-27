@@ -1,83 +1,38 @@
 #include "MovementSystem.h"
 
-#include "EntityManager.h"
-#include "MovementComponent.h"
-#include "TransformComponent.h"
-#include "Vector2D.h"
-#include "PlayerTagComponent.h"
-#include "SystemManager.h"
-#include "ColliderComponent.h"
-#include "EnemyTagComponent.h"
-#include "PathToTargetComponent.h"
-#include "ItemTagComponent.h"
-#include "OnPlaceComponent.h"
-#include "HealthComponent.h"
-#include "StepComponent.h"
-#include "StepLimitComponent.h"
-
-MovementSystem::MovementSystem(EntityManager* const entity_manager, SystemManager* const system_manager)
-    : ISystem(entity_manager, system_manager), player_is_moved_(false) {}
-
-void MovementSystem::OnPreUpdate() {}
+void MovementSystem::OnPreUpdate() {
+    player_is_moved_ = false;
+}
 
 void MovementSystem::OnUpdate() {
-  for (auto& entity : GetEntityManager()) {
-    if (entity.Contains<PlayerTagComponent>()) {
-      auto transform_component = entity.Get<TransformComponent>();
-      auto movement_component = entity.Get<MovementComponent>();
-      auto collider_component = entity.Get<ColliderComponent>();
+    // 1. ƒвижение игрока
+    if (game_state_.getPlayer()) {
+        auto* player = game_state_.getPlayer();
+        auto* mc = player->Get<MovementComponent>();
+        auto* tc = player->Get<TransformComponent>();
+        auto* cm = player->Get<ColliderComponent>();
+        cm->offset_ = mc->direction_; // запоминаем направление дл€ отката
 
-      collider_component->offset_ = movement_component->direction_;
-      // TODO: operator != not working correcctly, it always 0 - false
-      if (!(movement_component->direction_ == zeroVector)) {
-        player_is_moved_ = true;
-
-        for (auto& item : GetEntityManager()) {
-          if (item.Contains<ItemTagComponent>()) {
-            if (item.Get<OnPlaceComponent>()->getStatus()) {
-              item.Get<OnPlaceComponent>()->disable();
-            }
-          }
+        if (mc->direction_ != zeroVector) {
+            tc->position_ += mc->direction_;
+            //player_is_moved_ = true;
+            mc->direction_ = zeroVector;
         }
-
-        StepLimitComponent* step_limit_c = nullptr;
-
-        for (auto& observer : GetEntityManager()) {
-            if (observer.Contains<StepLimitComponent>()) {
-                step_limit_c = observer.Get<StepLimitComponent>();
-                break;
-            }
-        }
-
-        if (entity.Get<StepComponent>()->getSteps() >= step_limit_c->getStepLimit() / 2) {
-          auto hc_p = entity.Get<HealthComponent>();
-          hc_p->setHealth(hc_p->getHealth() - 1);
-        }
-      }
-      //std::cout<<"DIRECTION BEFORE, OnUpd: " << movement_component->direction_ << std::endl;
-
-      transform_component->position_ += movement_component->direction_;  // TODO: multiply by delta time
-      //std::cout<<"POSITION: " <<transform_component->position_ << std::endl;
-      movement_component->direction_ = zeroVector;
     }
-    
-    if (entity.Contains<EnemyTagComponent>() && player_is_moved_) {
-      auto tc_e = entity.Get<TransformComponent>();
-      auto pttc_e = entity.Get<PathToTargetComponent>();
-      auto cc_e = entity.Get<ColliderComponent>();
 
-      // for (auto& v : pttc_e->getPathToTarget()) {
-      //   std::cout << "MY WAY: " << v << std::endl;
-      // }
-      cc_e->offset_ = *(pttc_e->getPathToTarget().end() - 1);
-      tc_e->position_ = *(pttc_e->getPathToTarget().end() - 2);
-      std::cout << "TARGET: " << pttc_e->getPathToTarget()[1] << std::endl;
-      std::cout << "END: " << pttc_e->getPathToTarget()[pttc_e->getPathToTarget().size()-1] << std::endl;
-      std::cout << "BEGIN: " << pttc_e->getPathToTarget()[0] << std::endl;
+    // 2. ƒвижение врагов (только если игрок сдвинулс€)
+    if (player_is_moved_) {
+        for (auto& enemy : GetEntityManager()) {
+            if (!enemy.Contains<EnemyTagComponent>()) continue;
+
+            auto* pttc = enemy.Get<PathToTargetComponent>();
+            auto& path = pttc->getPathToTarget();
+            if (path.size() >= 2) {
+                auto* tc = enemy.Get<TransformComponent>();
+                tc->position_ = path[path.size() - 2];
+            }
+        }
     }
-  }
-  player_is_moved_ = false;
-
 }
 
 void MovementSystem::OnPostUpdate() {}

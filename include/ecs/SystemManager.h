@@ -51,6 +51,12 @@ class SystemManager {
     systems.at(typeid(System))->is_enabled_ = true;
   }
 
+  void EnableAll() const {
+      for (auto& pair : systems) {
+          pair.second.get()->is_enabled_ = true;
+      }
+  }
+
   void OnUpdate() {
     for (auto &p : systems) {
       if (p.second->is_enabled_) {

@@ -13,9 +13,8 @@ public:
     PathToTargetComponent();
 
     void setPathToTarget(std::vector<Vector2D>);
-    std::vector<Vector2D> getPathToTarget();
-    std::vector<Vector2D> getPathToTarget() const;
-
+    std::vector<Vector2D>& getPathToTarget();
+    const std::vector<Vector2D>& getPathToTarget() const;
 };
 
 #endif // PATH_TO_TARGET_H
