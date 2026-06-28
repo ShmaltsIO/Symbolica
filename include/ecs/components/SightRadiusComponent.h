@@ -5,7 +5,7 @@
 
 class SightRadiusComponent : public IComponent {
 private:
-    int radius_ = 3;
+    int radius_ = 5;
 public:
     SightRadiusComponent() = default;
     explicit SightRadiusComponent(int r) : radius_(r) {}

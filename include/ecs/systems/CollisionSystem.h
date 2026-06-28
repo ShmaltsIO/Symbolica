@@ -16,8 +16,6 @@ private:
 
     void handlePlayerCollision(Entity* player, Entity* other, std::vector<Entity*>& toDelete);
     void handleEnemyCollision(Entity* enemy, Entity* other);
-    
-    void Collide(Entity*, Entity*);
 
 protected:
   void OnPreUpdate() override;

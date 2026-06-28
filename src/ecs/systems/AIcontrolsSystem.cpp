@@ -20,7 +20,7 @@ void AIcontrolsSystem::OnUpdate() {
 
         int dist = getDistanceBetweenVectors2D(playerPos, tc->position_);
         if (dist <= sight->getRadius()) {
-            std::vector<Vector2D> path = aStar(playerPos, tc->position_, *map);
+            std::vector<Vector2D> path = aStar(tc->position_, playerPos, *map);
             pttc->setPathToTarget(path);
         }
         else {

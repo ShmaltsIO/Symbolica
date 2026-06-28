@@ -97,7 +97,7 @@ Entity* EntityFabric::createEnemyFrom(const EntityParams& params) {
 
     enemy->Add<EnemyTagComponent>();
     enemy->Add<PathToTargetComponent>();
-    enemy->Add<SightRadiusComponent>(3);
+    enemy->Add<SightRadiusComponent>(5);
 
     enemy->Get<HealthComponent>()->setHealthLimit(params.health);
     enemy->Get<HealthComponent>()->setHealth(params.health);
@@ -129,6 +129,7 @@ Entity* EntityFabric::createBossFrom(const BossSpawnConfig& config, const int le
 Entity* EntityFabric::createCoinFrom(const ItemSpawnConfig& config, const EntityParams& params) {
     auto coin = createBaseEntity();
 
+    coin->Add<ItemTagComponent>();
     coin->Add<MoneyTagComponent>();
     coin->Add<WorthComponent>(0);
 

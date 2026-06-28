@@ -1,6 +1,8 @@
 #ifndef MOVEMENT_SYSTEM_H
 #define MOVEMENT_SYSTEM_H
 
+#include <unordered_set>
+
 #include "ISystem.h"
 #include "EntityManager.h"
 #include "SystemManager.h"
@@ -10,6 +12,8 @@
 #include "PathToTargetComponent.h"
 #include "EnemyTagComponent.h"
 #include "GameState.h"
+#include "Vector2DHash.h"
+#include "ItemTagComponent.h"
 
 /**
  * @brief System of movements.

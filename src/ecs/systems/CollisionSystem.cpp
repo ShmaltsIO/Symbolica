@@ -74,6 +74,32 @@ void CollisionSystem::OnUpdate() {
         }
     }
 
+    // Атака врагов, стоящих рядом с игроком
+    Vector2D playerPos = player->Get<TransformComponent>()->position_;
+
+    for (auto& entity : GetEntityManager()) {
+        if (!entity.Contains<EnemyTagComponent>()) continue;
+        auto* tc_e = entity.Get<TransformComponent>();
+        if (getDistanceBetweenVectors2D(playerPos, tc_e->position_) == 1) {
+            // Враг рядом – атакует
+            // Можно вызвать handlePlayerCollision(player, &entity, toDelete)
+            // но нужно передать toDelete.
+            // Просто вызываем бой напрямую
+            auto* hc_p = player->Get<HealthComponent>();
+            auto* dc_p = player->Get<DamageComponent>();
+            auto* hc_e = entity.Get<HealthComponent>();
+            auto* dc_e = entity.Get<DamageComponent>();
+
+            while (hc_p->getHealth() > 0 && hc_e->getHealth() > 0) {
+                hc_p->setHealth(hc_p->getHealth() - dc_e->getDamage());
+                hc_e->setHealth(hc_e->getHealth() - dc_p->getDamage());
+            }
+            if (hc_e->getHealth() <= 0) {
+                toDelete.push_back(&entity);
+            }
+        }
+    }
+
     // Удаляем собранные сущности
     for (Entity* e : toDelete) {
         GetEntityManager().DeleteEntity(e->GetId());
