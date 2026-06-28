@@ -45,7 +45,7 @@ std::string RenderingSystem::getEntityString(const Entity& entity) const {
 
 // ----------------------------------------------------------------------------
 void RenderingSystem::renderLayer0() {
-    terminal_layer(0);
+    /*terminal_layer(0);
     for (const auto& entity : GetEntityManager()) {
         if (entity.Contains<GroundTagComponent>() ||
             entity.Contains<ObstacleTagComponent>() ||
@@ -56,6 +56,19 @@ void RenderingSystem::renderLayer0() {
                     transform->position_.getY(),
                     getEntityString(entity).c_str());
             }
+        }
+    }*/
+
+    terminal_layer(0);
+    auto* map = game_state_->getCurrentMap();
+    if (!map) return;
+    for (size_t y = 0; y < map->getHeight(); ++y) {
+        for (size_t x = 0; x < map->getWidth(); ++x) {
+            TileType tile = map->getTile(x, y);
+            char symbol = (tile == TileType::WALL) ? '#' : '.';
+            std::string color = (tile == TileType::WALL) ? "gray" : "dark green";
+            std::string str = "[color=" + color + "]" + symbol + "[/color]";
+            terminal_print(x, y, str.c_str());
         }
     }
 }

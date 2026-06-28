@@ -36,6 +36,7 @@
 #include "StateComponent.h"
 #include "EquipmentComponent.h"
 #include "NameComponent.h"
+#include "SightRadiusComponent.h"
 
 #include "ObstacleTagComponent.h"
 #include "PlayerTagComponent.h"

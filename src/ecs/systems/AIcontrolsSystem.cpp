@@ -1,41 +1,31 @@
 #include "AIcontrolsSystem.h"
-#include "EntityManager.h"
-#include "PlayerTagComponent.h"
-#include "EnemyTagComponent.h"
-#include "TransformComponent.h"
-#include "PathToTargetComponent.h"
-#include "aStar.h"
-#include "GameState.h"
-
-AIcontrolsSystem::AIcontrolsSystem(EntityManager* entityManager, SystemManager* systemManager, Context* context)
-    : ISystem(entityManager, systemManager), context_(context) {
-}
 
 void AIcontrolsSystem::OnPreUpdate() {}
 
 void AIcontrolsSystem::OnUpdate() {
-    auto* map = context_->game_state->getCurrentMap();
+    auto* map = game_state_->getCurrentMap();
     if (!map) return;
 
-    Vector2D playerPos;
-    for (auto& entity : GetEntityManager()) {
-        if (entity.Contains<PlayerTagComponent>()) {
-            auto tc = entity.Get<TransformComponent>();
-            playerPos = tc->position_;
-            break;
-        }
-    }
+    Entity* player = game_state_->getPlayer();
+    if (!player) return;
+    Vector2D playerPos = player->Get<TransformComponent>()->position_;
 
     for (auto& entity : GetEntityManager()) {
-        if (entity.Contains<EnemyTagComponent>()) {
-            auto tc = entity.Get<TransformComponent>();
-            auto pttc = entity.Get<PathToTargetComponent>();
+        if (!entity.Contains<EnemyTagComponent>()) continue;
+
+        auto* tc = entity.Get<TransformComponent>();
+        auto* pttc = entity.Get<PathToTargetComponent>();
+        auto* sight = entity.Get<SightRadiusComponent>();
+        if (!sight) continue; // если нет радиуса, пропускаем
+
+        int dist = getDistanceBetweenVectors2D(playerPos, tc->position_);
+        if (dist <= sight->getRadius()) {
             std::vector<Vector2D> path = aStar(playerPos, tc->position_, *map);
-            if (path.empty()) {
-                path.push_back(tc->position_);
-                path.push_back(tc->position_);
-            }
             pttc->setPathToTarget(path);
+        }
+        else {
+            // Не видит – путь пуст (враг стоит)
+            pttc->setPathToTarget({});
         }
     }
 }

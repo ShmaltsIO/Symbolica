@@ -82,8 +82,8 @@ void GameScene::OnCreate() {
     sys->AddSystem<GameOverSystem>(context_);
     sys->AddSystem<GameControlSystem>(controls_);
     sys->AddSystem<GameWinSystem>(context_);
-    sys->AddSystem<AIcontrolsSystem>(context_);
-    sys->AddSystem<RadiusUpdateSystem>();
+    sys->AddSystem<AIcontrolsSystem>(context_->game_state.get());
+    sys->AddSystem<RadiusUpdateSystem>(*context_->game_state.get());
     sys->AddSystem<RoomsSwitchSystem>(context_);
     sys->AddSystem<BattleSystem>();
     sys->AddSystem<InventoryRenderingSystem>();
@@ -138,7 +138,7 @@ void GameScene::loadLevel(int levelNumber) {
 
         // Генерация карты и сущностей (кроме игрока)
         Map map = levelGen->generateLevel(80, 40, levelNumber);
-        levelGen->getRoomFiller().getEntityFabric()->createMapTiles(map, 1);
+        //levelGen->getRoomFiller().getEntityFabric()->createMapTiles(map, 1);
 
         LevelWriter writer;
         writer.setPathToFile(levelPath);

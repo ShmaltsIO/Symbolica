@@ -97,6 +97,7 @@ Entity* EntityFabric::createEnemyFrom(const EntityParams& params) {
 
     enemy->Add<EnemyTagComponent>();
     enemy->Add<PathToTargetComponent>();
+    enemy->Add<SightRadiusComponent>(3);
 
     enemy->Get<HealthComponent>()->setHealthLimit(params.health);
     enemy->Get<HealthComponent>()->setHealth(params.health);

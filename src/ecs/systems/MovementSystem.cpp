@@ -13,9 +13,11 @@ void MovementSystem::OnUpdate() {
         auto* cm = player->Get<ColliderComponent>();
         cm->offset_ = mc->direction_; // запоминаем направление для отката
 
-        if (mc->direction_ != zeroVector) {
+        Vector2D vec = tc->position_ + mc->direction_;
+
+        if (mc->direction_ != zeroVector && game_state_.getCurrentMap()->isWalkable(vec.getX(), vec.getY())) {
             tc->position_ += mc->direction_;
-            //player_is_moved_ = true;
+            player_is_moved_ = true;
             mc->direction_ = zeroVector;
         }
     }
